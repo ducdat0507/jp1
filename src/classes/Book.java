@@ -1,6 +1,7 @@
 package classes;
 
 public class Book {
+
     private String name;
     public String getName() {
         return name;
@@ -39,7 +40,7 @@ public class Book {
         this.price = price;
         this.quantity = quantity;
     }
-    
+
     @Override
     public String toString() {
         return "Book [name=" + name + ", author=" + author + ", price=" + price + ", quantity=" + quantity + "]";

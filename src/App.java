@@ -1,43 +1,50 @@
-import java.time.format.SignStyle;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 import classes.Author;
 import classes.Book;
-import classes.Customer;
 import classes.Gender;
 
 public class App {
 
-    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-        Set<Object> seen = ConcurrentHashMap.newKeySet();
-        return t -> seen.add(keyExtractor.apply(t));
-    }
-    public static void main(String[] args) {
-        List<Author> authors = new ArrayList<>();
-        authors.add(new Author("A", "a@a.com", Gender.MALE));
-        authors.add(new Author("B", "b@b.com", Gender.FEMALE));
-        authors.add(new Author("C", "c@c.com", Gender.MALE));
-        authors.add(new Author("D", "d@d.com", Gender.FEMALE));
+    private static List<Author> authors = new ArrayList<>();
+    private static List<Book> books = new ArrayList<>();
 
-        List<Book> books = new ArrayList<>();
-        books.add(new Book("A", authors.get(0), 1200, 100));
-        books.add(new Book("B", authors.get(1), 1300, 110));
-        books.add(new Book("C", authors.get(2), 1400, 120));
-        books.add(new Book("D", authors.get(3), 1100, 100));
-        books.add(new Book("X", authors.get(0), 1300, 130));
-        books.add(new Book("Y", authors.get(1), 1800, 170));
-        books.add(new Book("Z", authors.get(2), 1500, 120));
-        books.add(new Book("W", authors.get(2), 1200, 150));
+    private static void addAuthor(Author author) 
+    {
+        if (authors.stream().anyMatch(x -> x.getName() == author.getName()))
+            System.err.println("Author already exists");
+        else authors.add(author);
+    }
+
+    private static void addBook(Book book) 
+    {
+        if (books.stream().anyMatch(x -> x.getName() == book.getName()))
+            System.err.println("Book already exists");
+        else books.add(book);
+    }
+
+    public static void main(String[] args) {
+        addAuthor(new Author("A", "a@a.com", Gender.MALE));
+        addAuthor(new Author("B", "b@b.com", Gender.FEMALE));
+        addAuthor(new Author("C", "c@c.com", Gender.MALE));
+        addAuthor(new Author("D", "d@d.com", Gender.FEMALE));
+
+        addBook(new Book("Aasdsd", authors.get(0), 1200, 100));
+        addBook(new Book("Basfa", authors.get(1), 1300, 110));
+        addBook(new Book("Cqwf", authors.get(2), 1400, 120));
+        addBook(new Book("Ddsdsv", authors.get(3), 1100, 100));
+        addBook(new Book("Xfqwf", authors.get(0), 1300, 130));
+        addBook(new Book("Ygwbg", authors.get(1), 1800, 170));
+        addBook(new Book("Zsdfa", authors.get(2), 1500, 120));
+        addBook(new Book("Wsdvds.toLower()", authors.get(2), 1200, 150));
 
         System.out.println("Sorted book array:");
         books.stream()
+            .sorted(Comparator.comparing(Book::getName))
             .forEach(System.out::println);
 
         System.out.println("\nBook with max price:");
@@ -45,13 +52,21 @@ public class App {
             .max(Comparator.comparing(Book::getPrice)).get());
 
         Scanner scanner = new Scanner(System.in);
+
         System.out.println("\nName of author:");
         String authorName = scanner.nextLine().trim();
-        scanner.close();
         System.out.println("------");
         books.stream()
             .filter(x -> x.getAuthor().getName().equals(authorName))
             .forEach(System.out::println);
 
+        System.out.println("\nName of book:");
+        String bookName = scanner.nextLine().trim();
+        Pattern bookSearchPattern = Pattern.compile(Pattern.quote(bookName), Pattern.CASE_INSENSITIVE);
+        System.out.println("------");
+        books.stream()
+            .filter(x -> bookSearchPattern.matcher(x.getName()).find())
+            .forEach(System.out::println);
+        scanner.close();
     }
 }
