@@ -3,70 +3,73 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-import classes.Author;
-import classes.Book;
-import classes.Gender;
+import classes.Customer;
+import classes.Invoice;
 
 public class App {
+    private static List<Customer> customers = new ArrayList<>();
+    private static List<Invoice> invoices = new ArrayList<>();
 
-    private static List<Author> authors = new ArrayList<>();
-    private static List<Book> books = new ArrayList<>();
-
-    private static void addAuthor(Author author) 
-    {
-        if (authors.stream().anyMatch(x -> x.getName() == author.getName()))
-            System.err.println("Author already exists");
-        else authors.add(author);
-    }
-
-    private static void addBook(Book book) 
-    {
-        if (books.stream().anyMatch(x -> x.getName() == book.getName()))
-            System.err.println("Book already exists");
-        else books.add(book);
-    }
+    private static Scanner scanner;
 
     public static void main(String[] args) {
-        addAuthor(new Author("A", "a@a.com", Gender.MALE));
-        addAuthor(new Author("B", "b@b.com", Gender.FEMALE));
-        addAuthor(new Author("C", "c@c.com", Gender.MALE));
-        addAuthor(new Author("D", "d@d.com", Gender.FEMALE));
+        customers.add(new Customer(1, "Mr A", 2));
+        customers.add(new Customer(2, "Mr B", 5));
+        customers.add(new Customer(3, "Mr C", 3));
+        
+        invoices.add(new Invoice(1, customers.get(0), 200));
+        invoices.add(new Invoice(2, customers.get(0), 320));
+        invoices.add(new Invoice(3, customers.get(1), 250));
+        invoices.add(new Invoice(4, customers.get(1), 370));
+        invoices.add(new Invoice(5, customers.get(2), 240));
+        invoices.add(new Invoice(6, customers.get(2), 360));
 
-        addBook(new Book("Aasdsd", authors.get(0), 1200, 100));
-        addBook(new Book("Basfa", authors.get(1), 1300, 110));
-        addBook(new Book("Cqwf", authors.get(2), 1400, 120));
-        addBook(new Book("Ddsdsv", authors.get(3), 1100, 100));
-        addBook(new Book("Xfqwf", authors.get(0), 1300, 130));
-        addBook(new Book("Ygwbg", authors.get(1), 1800, 170));
-        addBook(new Book("Zsdfa", authors.get(2), 1500, 120));
-        addBook(new Book("Wsdvds.toLower()", authors.get(2), 1200, 150));
+        scanner = new Scanner(System.in);
 
-        System.out.println("Sorted book array:");
-        books.stream()
-            .sorted(Comparator.comparing(Book::getName))
-            .forEach(System.out::println);
+        getInvoiceByCustomerId();
+        System.out.println();
+        getCustomerWithMaxTotalAmount();
+        System.out.println();
+        getCustomerWithMinDiscount();
+        System.out.println();
+        searchCustomer();
 
-        System.out.println("\nBook with max price:");
-        System.out.println(books.stream()
-            .max(Comparator.comparing(Book::getPrice)).get());
-
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("\nName of author:");
-        String authorName = scanner.nextLine().trim();
-        System.out.println("------");
-        books.stream()
-            .filter(x -> x.getAuthor().getName().equals(authorName))
-            .forEach(System.out::println);
-
-        System.out.println("\nName of book:");
-        String bookName = scanner.nextLine().trim();
-        Pattern bookSearchPattern = Pattern.compile(Pattern.quote(bookName), Pattern.CASE_INSENSITIVE);
-        System.out.println("------");
-        books.stream()
-            .filter(x -> bookSearchPattern.matcher(x.getName()).find())
-            .forEach(System.out::println);
         scanner.close();
+    }
+
+    private static void getInvoiceByCustomerId() {
+        System.out.print("Enter customer ID: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        invoices.stream().filter(x -> x.getCustomerId() == id).forEach(System.out::println);
+    }
+
+    private static void getCustomerWithMaxTotalAmount() {
+        System.out.println("Customer with max total amount:");
+        invoices.stream()
+            .collect(Collectors.groupingBy(Invoice::getCustomer))
+            .entrySet().stream()
+            .map(x -> new Invoice(x.getKey().getId(), x.getKey(), x.getValue().stream().map(Invoice::getAmount).reduce(Double::sum).orElse(0.0)))
+            .max(Comparator.comparing(Invoice::getAmount)).ifPresent(System.out::println);
+    }
+
+    private static void getCustomerWithMinDiscount() {
+        System.out.println("Customer with min discount:");
+        customers.stream().min(Comparator.comparing(Customer::getDiscount)).ifPresent(System.out::println);
+    }
+
+    private static void searchCustomer() {
+        System.out.print("Enter search query: ");
+        String query = scanner.nextLine();
+
+        try {
+            int id = Integer.parseInt(query);
+            invoices.stream().filter(x -> x.getId() == id).findAny().ifPresent(x -> System.out.println(x.getCustomer()));
+        } catch (NumberFormatException e) {}
+
+        Pattern pattern = Pattern.compile(Pattern.quote(query), Pattern.CASE_INSENSITIVE);
+        customers.stream().filter(x -> pattern.matcher(x.getName()).find()).forEach(System.out::println);
     }
 }
