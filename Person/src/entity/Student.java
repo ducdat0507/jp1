@@ -3,7 +3,7 @@ package entity;
 import java.time.LocalDate;
 
 public class Student extends Person {
-    public String studentId;
+    private String studentId;
 
     public String getStudentId() {
         return studentId;
