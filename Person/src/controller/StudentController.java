@@ -6,15 +6,15 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.regex.*;
 
-import entity.Staff;
+import entity.Student;
 
-public class StudentController extends ArrayList<Staff> {
+public class StudentController extends ArrayList<Student> {
 
-    public Optional<Staff> getYoungest() {
-        return stream().max(Comparator.comparing(Staff::getBirthdate));
+    public Optional<Student> getYoungest() {
+        return stream().max(Comparator.comparing(Student::getBirthdate));
     }
 
-    public Stream<Staff> getStudentByName(String query) {
+    public Stream<Student> getStudentByName(String query) {
         Pattern regex = Pattern.compile(Pattern.quote(query), Pattern.CASE_INSENSITIVE);
         return stream().filter(x -> regex.matcher(x.getName()).find());
     }
