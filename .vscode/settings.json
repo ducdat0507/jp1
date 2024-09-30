@@ -2,5 +2,6 @@
     "java.project.sourcePaths": [
         "Person/src",
         "e5/src",
+        "lab6/src",
     ]
 }
