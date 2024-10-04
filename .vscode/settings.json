@@ -1,9 +1,5 @@
 {
     "java.project.sourcePaths": [
-        "Banking/src",
-        "Person/src",
-        "e5/src",
-        "lab6/src",
-        "e7/src",
+        "e8/src",
     ]
 }
