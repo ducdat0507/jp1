@@ -26,7 +26,7 @@ public class AccountService {
 
     public List<Account> getByCustomerName(String keyword) {
         return accounts.stream()
-            .filter(a->Global.ignoreCase(a.getCustomer().getName(), keyword))
+            .filter(a->Global.ignoreCase(keyword, a.getCustomer().getName()))
             .collect(Collectors.toList());
     }
 

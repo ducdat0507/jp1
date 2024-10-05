@@ -21,7 +21,7 @@ public class Main {
         CustomerController customerController = new CustomerController(cs);
 
         customers.add(new Customer(1,"VCB01", "Binh", Gender.MALE));
-        customers.add(new Customer(2,"TCB002","Minh", Gender.FEMALE));
+        customers.add(new Customer(2,"TCB002","Bui Binh Minh", Gender.FEMALE));
 
         customerController.getByCode("vcb01")
             .ifPresentOrElse(System.out::println, () -> System.out.println("Customer not found"));
@@ -29,7 +29,7 @@ public class Main {
         customerController.getById(3)
             .ifPresentOrElse(System.out::println, () -> System.out.println("Customer not found"));
             System.out.println("-----");
-        customerController.getByName("Inh")
+        customerController.getByName("bui minh")
             .forEach(System.out::println);
 
         // -----------
