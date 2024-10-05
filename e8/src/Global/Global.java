@@ -7,6 +7,6 @@ public class Global {
     public static boolean ignoreCase(String preg, String str){
         Pattern p = Pattern.compile(Pattern.quote(preg),Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(str);
-        return m.matches();
+        return m.find();
     }
 }

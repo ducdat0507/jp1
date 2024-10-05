@@ -15,23 +15,21 @@ public class CustomerService implements IGeneral<Customer> {
     }
     @Override
     public Optional<Customer> getById(int id) {
-        Optional<Customer> customer = customers.stream()
-                .filter(c->c.getId()==id)
-                .findFirst();
-        return customer;
+        return customers.stream()
+            .filter(c->c.getId()==id)
+            .findFirst();
     }
     @Override
     public Optional<Customer> getByCode(String code) {
-        Optional<Customer> customer = customers.stream()
-                .filter(c->c.getCode().equalsIgnoreCase(code))
-                .findFirst();
-        return customer;
+        return customers.stream()
+            .filter(c->c.getCode().equalsIgnoreCase(code))
+            .findFirst();
     }
 
     @Override
     public List<Customer> getByName(String keyword) {
         return customers.stream()
-                .filter(c->Global.ignoreCase(c.getName(), keyword))
-                .collect(Collectors.toList());
+            .filter(c->Global.ignoreCase(keyword, c.getName()))
+            .collect(Collectors.toList());
     }
 }

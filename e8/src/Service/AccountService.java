@@ -18,7 +18,6 @@ public class AccountService {
         this.accounts = accounts;
     }
     
-
     public List<Account> getByCustomerCode(String code) {
         return accounts.stream()
             .filter(a->a.getCustomer().getCode().equalsIgnoreCase(code))
@@ -31,19 +30,19 @@ public class AccountService {
             .collect(Collectors.toList());
     }
 
-    public List<Account> getAccountByCustomer(String keyword) {
+    public List<Account> getAccountByCustomer() {
         return accounts.stream()
             .filter(a->a.getBalance() > 1e6 && a.getCustomer().getGender() == Gender.MALE)
             .collect(Collectors.toList());
     }
 
-    public long countAccountByCustomer(String keyword) {
+    public long countAccountByCustomer() {
         return accounts.stream()
             .filter(a->a.getBalance() > 1e5 && a.getCustomer().getGender() == Gender.FEMALE)
             .count();
     }
 
-    public Optional<Account> getMaxBalance(String keyword) {
+    public Optional<Account> getMaxBalance() {
         return accounts.stream()
             .filter(a-> a.getCustomer().getGender() == Gender.FEMALE)
             .max(Comparator.comparing(Account::getBalance));

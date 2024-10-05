@@ -16,23 +16,21 @@ public class StaffService implements IGeneral<Staff> {
     }
     @Override
     public Optional<Staff> getById(int id) {
-        Optional<Staff> staff = staffs.stream()
-                .filter(c->c.getId() == id)
-                .findFirst();
-        return staff;
+        return staffs.stream()
+            .filter(c->c.getId() == id)
+            .findFirst();
     }
     @Override
     public Optional<Staff> getByCode(String code) {
-        Optional<Staff> staff = staffs.stream()
-                .filter(c->c.getCode().equalsIgnoreCase(code))
-                .findFirst();
-        return staff;
+        return staffs.stream()
+            .filter(c->c.getCode().equalsIgnoreCase(code))
+            .findFirst();
     }
 
     @Override
     public List<Staff> getByName(String keyword) {
         return staffs.stream()
-                .filter(c->Global.ignoreCase(c.getName(), keyword))
-                .collect(Collectors.toList());
+            .filter(c->Global.ignoreCase(keyword, c.getName()))
+            .collect(Collectors.toList());
     }
 }
