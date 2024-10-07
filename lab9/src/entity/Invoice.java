@@ -24,8 +24,26 @@ public class Invoice {
     public Account getAccount() {
         return account;
     }
+    public Customer getCustomer() {
+        return account.getCustomer();
+    }
+    public int getCustomerId() {
+        return account.getCustomer().getId();
+    }
+    public String getCustomerName() {
+        return account.getCustomer().getName();
+    }
+    public double getCustomerDiscount() {
+        return account.getCustomer().getDiscount();
+    }
     public double getAmount() {
         return amount;
+    }
+    public double getAmountAfterDiscount() {
+        return amount * (1 - getCustomerDiscount() / 100);
+    }
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
     public LocalDateTime getInvoiceTime() {
         return invoiceTime;

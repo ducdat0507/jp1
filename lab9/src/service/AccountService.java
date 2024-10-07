@@ -6,47 +6,46 @@ import java.util.List;
 import java.util.Optional;
 
 import entity.Account;
-import entity.Customer;
 import global.Global;
 import igeneric.IContainerService;
 import igeneric.ISearchService;
 
-public class CustomerService implements IContainerService<Customer>, ISearchService<Customer> {
-    List<Customer> list;
+public class AccountService implements IContainerService<Account>, ISearchService<Account> {
+    List<Account> list;
 
-    public CustomerService() {
+    public AccountService() {
         list = new ArrayList<>();
     }
 
     @Override
-    public void add(Customer item) {
+    public void add(Account item) {
         list.add(item);
     }
 
     @Override
-    public Customer get(int id) {
+    public Account get(int id) {
         return list.stream().filter(x -> x.getId() == id).findAny().orElse(null);
     }
 
     @Override
-    public List<Customer> list(int limit, int offset) {
+    public List<Account> list(int limit, int offset) {
         return list.stream().limit(limit).skip(offset).toList();
     }
 
     @Override
-    public List<Customer> list(Comparator<? super Customer> sort, int limit, int offset) {
+    public List<Account> list(Comparator<? super Account> sort, int limit, int offset) {
         return list.stream().sorted(sort).limit(limit).skip(offset).toList();
     }
 
     @Override
-    public List<Customer> search(String query) {
-        List<Customer> result = new ArrayList<>();
+    public List<Account> search(String query) {
+        List<Account> result = new ArrayList<>();
         try {
             int id = Integer.parseInt(query);
             Optional.ofNullable(get(id)).ifPresent(result::add);
         } catch (NumberFormatException e) { /* Do nothing */ }
 
-        list.stream().filter(Global.fuzzyMatch(query, Customer::getName)).forEach(result::add);
+        list.stream().filter(Global.fuzzyMatch(query, Account::getCustomerName)).forEach(result::add);
 
         return result;
     }

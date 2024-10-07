@@ -17,6 +17,12 @@ public class Account {
     public Customer getCustomer() {
         return customer;
     }
+    public int getCustomerId() {
+        return customer.getId();
+    }
+    public String getCustomerName() {
+        return customer.getName();
+    }
     public double getBalance() {
         return balance;
     }
