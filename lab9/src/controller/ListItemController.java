@@ -1,23 +1,29 @@
 package controller;
 
+import java.util.Comparator;
 import java.util.List;
 
 import global.ANSI;
+import igeneric.IContainerService;
+import igeneric.IListItemController;
 import igeneric.ISearchController;
 import igeneric.ISearchService;
 
-public class SearchController<T> implements ISearchController {
-    private ISearchService<T> service;
-    public SearchController(ISearchService<T> service) {
+public class ListItemController<T> implements IListItemController {
+    private IContainerService<T> service;
+    private Comparator<? super T> sortCriteria;
+
+    public ListItemController(IContainerService<T> service) {
         this.service = service;
+    }
+    public ListItemController(IContainerService<T> service, Comparator<? super T> sortCriteria) {
+        this.service = service;
+        this.sortCriteria = sortCriteria;
     }
     
     private long counter = 0;
-    public void promptAndSearch() {
-        System.out.print("Enter search query: " + ANSI.format(ANSI.FG_LIGHT_YELLOW));
-        String query = System.console().readLine();
-        System.out.print(ANSI.format(ANSI.CLEAR));
-        List<T> result = service.search(query);
+    public void list() {
+        List<T> result = sortCriteria == null ? service.list(10, 0) : service.list(sortCriteria, 10, 0);
         long length = result.size();
         counter = 0;
         if (length > 0) {
