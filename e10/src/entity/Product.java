@@ -1,13 +1,13 @@
 package entity;
 
-import exception.InvalidArgumentException;
+import exception.ValidationException;
 
 public class Product {
     private String id;
     private String name;
     private int quantity;
 
-    public Product(String id, String name, int price) throws InvalidArgumentException {
+    public Product(String id, String name, int price) {
         setId(id);
         setName(name);
         setQuantity(quantity);
@@ -16,22 +16,19 @@ public class Product {
     public String getId() {
         return id;
     }
-    private void setId(String id) throws InvalidArgumentException {
-        if (!id.matches("^(MS|NE|SE)[0-9]{6}$")) throw new InvalidArgumentException("Id must match ^(MS|NE|SE)[0-9]{6}$");
+    private void setId(String id) {
         this.id = id;
     }
     public String getName() {
         return name;
     }
-    public void setName(String name) throws InvalidArgumentException {
-        if (!name.matches("^[a-zA-Z\\s]{3,}$")) throw new InvalidArgumentException("Name must match ^[a-zA-Z\\s]{3,}$");
+    public void setName(String name) {
         this.name = name;
     }
     public int getQuantity() {
         return quantity;
     }
-    public void setQuantity(int quantity) throws InvalidArgumentException {
-        if (quantity < 0) throw new InvalidArgumentException("Quantity can not be less than 0");
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 

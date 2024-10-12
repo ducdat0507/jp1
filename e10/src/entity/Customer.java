@@ -1,12 +1,12 @@
 package entity;
 
-import exception.InvalidArgumentException;
+import exception.ValidationException;
 
 public class Customer {
     private int id;
     private String name;
 
-    public Customer(int id, String name) throws InvalidArgumentException {
+    public Customer(int id, String name) {
         setId(id);
         setName(name);
     }
@@ -20,8 +20,7 @@ public class Customer {
     public String getName() {
         return name;
     }
-    public void setName(String name) throws InvalidArgumentException {
-        if (!name.matches("^[a-zA-Z\\s]{3,50}$")) throw new InvalidArgumentException("Name must match ^[a-zA-Z\\s]{3,50}$");
+    public void setName(String name) {
         this.name = name;
     }
 

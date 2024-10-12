@@ -2,31 +2,30 @@ package entity;
 
 import java.time.LocalDateTime;
 
-import exception.InvalidArgumentException;
+import exception.ValidationException;
 
 public class Order {
     private String id;
-    private Customer customer;
+    private int customerId;
     private LocalDateTime orderTime;
 
-    public Order(String id, Customer customer, LocalDateTime orderTime) throws InvalidArgumentException {
+    public Order(String id, int customerId, LocalDateTime orderTime) {
         setId(id);
-        setCustomer(customer);
+        setCustomerId(customerId);
         setOrderTime(orderTime);
     }
 
     public String getId() {
         return id;
     }
-    public void setId(String id) throws InvalidArgumentException {
-        if (!id.matches("^(ORDPM)[0-9]{8}$")) throw new InvalidArgumentException("Name must match ^(ORDPM)[0-9]{8}$");
+    public void setId(String id) {
         this.id = id;
     }
-    public Customer getCustomer() {
-        return customer;
+    public int getCustomerId() {
+        return customerId;
     }
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
     public LocalDateTime getOrderTime() {
         return orderTime;
@@ -37,6 +36,6 @@ public class Order {
     
     @Override
     public String toString() {
-        return "Order [id=" + id + ", customer=" + customer + ", orderTime=" + orderTime + "]";
+        return "Order [id=" + id + ", customerId=" + customerId + ", orderTime=" + orderTime + "]";
     }
 }

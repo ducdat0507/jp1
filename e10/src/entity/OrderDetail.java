@@ -1,18 +1,18 @@
 package entity;
 
-import exception.InvalidArgumentException;
+import exception.ValidationException;
 
 public class OrderDetail {
     private int id;
-    private Order order;
-    private Product product;
+    private String orderId;
+    private String productId;
     private int quantity;
     private OrderStatus status;
 
-    public OrderDetail(int id, Order order, Product product, int quantity) throws InvalidArgumentException {
+    public OrderDetail(int id, String orderId, String productId, int quantity) {
         setId(id);
-        setOrder(order);
-        setProduct(product);
+        setOrderId(orderId);
+        setProductId(productId);
         setQuantity(quantity);
         setStatus(OrderStatus.PENDING);
     }
@@ -23,23 +23,22 @@ public class OrderDetail {
     private void setId(int id) {
         this.id = id;
     }
-    public Order getOrder() {
-        return order;
+    public String getOrderId() {
+        return orderId;
     }
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
-    public Product getProduct() {
-        return product;
+    public String getProductId() {
+        return productId;
     }
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
     public int getQuantity() {
         return quantity;
     }
-    public void setQuantity(int quantity) throws InvalidArgumentException {
-        if (quantity < 0) throw new InvalidArgumentException("Quantity can not be less than 0");
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
     public OrderStatus getStatus() {
