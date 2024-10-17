@@ -1,6 +1,6 @@
 package exception;
 
-public class NotEnoughInventoryException extends Exception {
+public class NotEnoughInventoryException extends RuntimeException {
     public NotEnoughInventoryException() {
         super();
     }

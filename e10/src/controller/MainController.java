@@ -6,11 +6,7 @@ import entity.OrderDetail;
 import entity.Product;
 import exception.ValidationException;
 import exception.NotEnoughInventoryException;
-import service.CustomerService;
 import service.MainService;
-import service.OrderDetailService;
-import service.OrderService;
-import service.ProductService;
 
 public class MainController {
     private MainService service;

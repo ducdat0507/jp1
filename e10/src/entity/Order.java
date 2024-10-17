@@ -2,8 +2,6 @@ package entity;
 
 import java.time.LocalDateTime;
 
-import exception.ValidationException;
-
 public class Order {
     private String id;
     private int customerId;

@@ -24,4 +24,9 @@ public class CustomerService implements IGenericService<Customer, Integer> {
     public Optional<Customer> get(Integer id) {
         return list.stream().filter(x -> x.getId() == id).findFirst();
     }
+
+    @Override
+    public void delete (Customer item) {
+        list.remove(item);
+    }
 }
