@@ -1,13 +1,11 @@
 package entity;
 
-import exception.ValidationException;
-
 public class Product {
     private String id;
     private String name;
     private int quantity;
 
-    public Product(String id, String name, int price) {
+    public Product(String id, String name, int quantity) {
         setId(id);
         setName(name);
         setQuantity(quantity);

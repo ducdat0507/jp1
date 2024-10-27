@@ -1,7 +1,5 @@
 package entity;
 
-import exception.ValidationException;
-
 public class OrderDetail {
     private int id;
     private String orderId;

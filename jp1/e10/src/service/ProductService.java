@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import entity.Customer;
 import entity.Product;
 import igeneric.IGenericService;
 
@@ -22,6 +23,11 @@ public class ProductService implements IGenericService<Product, String> {
 
     @Override
     public Optional<Product> get(String id) {
-        return list.stream().filter(x -> x.getId() == id).findFirst();
+        return list.stream().filter(x -> x.getId().equals(id)).findFirst();
+    }
+
+    @Override
+    public void delete (Product item) {
+        list.remove(item);
     }
 }
