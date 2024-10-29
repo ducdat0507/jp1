@@ -12,6 +12,7 @@ public class Main {
         set.add(124);
         set.add(125);
         set.add(126);
+        set.add(123456789);
         set = set.stream().filter(Main::divisionByThree).collect(Collectors.toSet());
         System.out.println(set);
     }
