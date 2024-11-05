@@ -1,14 +1,26 @@
 package Global;
 
+import java.lang.ModuleLayer.Controller;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import Entity.Customer;
 import Exception.ValidationException;
+import IGeneral.IGenericController;
 
 public class Prompt {
     private static Scanner scanner;
@@ -57,6 +69,44 @@ public class Prompt {
                 System.out.print(ANSI.format(ANSI.CLEAR));
                 if (!validInputs.containsKey(choice)) throw new ValidationException("Invalid choice");
                 return validInputs.get(choice);
+            } catch (ValidationException e) {
+                System.out.println(
+                    ANSI.format(ANSI.FG_RED)
+                    + e.getMessage() + ANSI.format(ANSI.CLEAR));
+            }
+        }
+    }
+
+    public static <T> T search(String header, IGenericController<T> controller, Function<String, Predicate<T>> criteria) {
+        List<T> activeItems = new ArrayList();
+        String choice;
+        while (true) {
+            try {
+                AtomicInteger i = new AtomicInteger();
+                activeItems.forEach(x -> {
+                    System.out.println(
+                        ANSI.format(ANSI.FG_LIGHT_YELLOW) + ":" + i.incrementAndGet() + ")"
+                        + ANSI.format(ANSI.CLEAR) + " " + x);
+                });
+
+                System.out.print(
+                    ANSI.format(ANSI.BOLD)
+                    + "Select with ':num' or search: " + ANSI.format(ANSI.CLEAR, ANSI.FG_LIGHT_GREEN, ANSI.ITALIC));
+
+                choice = scanner.nextLine().trim();
+
+                if (choice.startsWith(":")) {
+                    int choiceIdx;
+                    try { choiceIdx = Integer.parseInt(choice.substring(1)); }
+                    catch (NumberFormatException e) { throw new ValidationException("Choice must be a number"); }
+
+                    if (choiceIdx < 0 || choiceIdx >= activeItems.size()) throw new ValidationException("Choice out of bounds");
+
+                    return activeItems.get(choiceIdx);
+                }
+                Predicate<T> tester = criteria.apply(choice);
+                activeItems = controller.stream().filter(tester).limit(10).collect(Collectors.toList());
+                if (activeItems.size() == 1) return activeItems.get(0);
             } catch (ValidationException e) {
                 System.out.println(
                     ANSI.format(ANSI.FG_RED)

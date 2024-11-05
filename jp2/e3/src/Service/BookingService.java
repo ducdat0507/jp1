@@ -9,7 +9,7 @@ import IGeneral.IGenericService;
 
 public class BookingService implements IGenericService<Booking> {
     private Set<Booking> set;
-    public int nextId;
+    private int nextId;
 
     public BookingService() {
         set = new HashSet<>();

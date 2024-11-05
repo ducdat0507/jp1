@@ -46,26 +46,7 @@ public class Main {
             ));
             switch (choice) {
                 case "1":
-                    Booking booking = new Booking(
-                        cc.get(Prompt.string("Enter customer ID: ", (x) -> {
-                            if (cc.get(x) == null) return "Customer does not exist";
-                            return null;
-                        })),
-                        rc.get(Prompt.string("Enter room ID: ", (x) -> {
-                            if (rc.get(x) == null) return "Room does not exist";
-                            return null;
-                        })),
-                        LocalDateTime.parse(Prompt.string("Enter check-in time: ", (x) -> {
-                            try { LocalDateTime.parse(x); return null; }
-                            catch (Exception e) { return "Invalid date time"; }
-                        })),
-                        LocalDateTime.parse(Prompt.string("Enter check-out time: ", (x) -> {
-                            try { LocalDateTime.parse(x); return null; }
-                            catch (Exception e) { return "Invalid date time"; }
-                        }))
-                    );
-                    bc.add(booking);
-                    System.out.println("Added booking with id " + booking.getId());
+                    controller.promptBooking();
                     break;
 
                 case "2":
