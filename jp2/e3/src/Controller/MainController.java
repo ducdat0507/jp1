@@ -65,7 +65,7 @@ public class MainController {
                         catch (Exception e) { return "Invalid date time"; }
                     })));
                     Boolean isOverlap = bookings.stream().anyMatch(x -> x.getRoom().equals(booking.getRoom()) && 
-                        (x.getCheckInTime().isBefore(x.getCheckOutTime()) || x.getCheckOutTime().isAfter(x.getCheckInTime())));
+                        (x.getCheckInTime().isBefore(booking.getCheckOutTime()) || booking.getCheckInTime().isBefore(x.getCheckOutTime())));
                     if (Boolean.TRUE.equals(isOverlap)) {
                         System.out.println("Room is occupied at given time");
                         step = 3;
