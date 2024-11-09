@@ -78,10 +78,14 @@ public class Prompt {
     }
 
     public static <T> T search(String header, IGenericController<T> controller, Function<String, Predicate<T>> criteria) {
-        List<T> activeItems = new ArrayList();
+        List<T> activeItems = controller.stream().limit(10).toList();
         String choice;
         while (true) {
             try {
+                System.out.println(
+                    ANSI.format(ANSI.CLEAR, ANSI.UNDERLINE, ANSI.BOLD)
+                    + header + ANSI.format(ANSI.CLEAR));
+
                 AtomicInteger i = new AtomicInteger();
                 activeItems.forEach(x -> {
                     System.out.println(
@@ -90,10 +94,11 @@ public class Prompt {
                 });
 
                 System.out.print(
-                    ANSI.format(ANSI.BOLD)
+                    ANSI.format(ANSI.CLEAR, ANSI.BOLD)
                     + "Select with ':num' or search: " + ANSI.format(ANSI.CLEAR, ANSI.FG_LIGHT_GREEN, ANSI.ITALIC));
-
                 choice = scanner.nextLine().trim();
+                System.out.print(ANSI.format(ANSI.CLEAR));
+
 
                 if (choice.startsWith(":")) {
                     int choiceIdx;
@@ -103,10 +108,13 @@ public class Prompt {
                     if (choiceIdx < 0 || choiceIdx >= activeItems.size()) throw new ValidationException("Choice out of bounds");
 
                     return activeItems.get(choiceIdx);
+                } else if (!choice.isEmpty()) {
+                    Predicate<T> tester = criteria.apply(choice);
+                    List<T> newActiveItems = controller.stream().filter(tester).limit(10).toList();
+                    if (newActiveItems.size() == 0) throw new ValidationException("No items found");
+                    else if (newActiveItems.size() == 1) return activeItems.get(0);
+                    else if (newActiveItems.size() >= 1) activeItems = newActiveItems;
                 }
-                Predicate<T> tester = criteria.apply(choice);
-                activeItems = controller.stream().filter(tester).limit(10).collect(Collectors.toList());
-                if (activeItems.size() == 1) return activeItems.get(0);
             } catch (ValidationException e) {
                 System.out.println(
                     ANSI.format(ANSI.FG_RED)
