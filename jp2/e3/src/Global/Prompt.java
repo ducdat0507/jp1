@@ -136,7 +136,7 @@ public class Prompt {
         }
 
         public static Option<String> of (String input, String label) {
-            return new Option<String>(input, input, label);
+            return new Option<>(input, input, label);
         }
         
         public Option(String input, T value, String label) {

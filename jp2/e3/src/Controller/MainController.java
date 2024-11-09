@@ -47,11 +47,6 @@ public class MainController {
                     break;
             
                 case 2:
-                    booking.setRoom(Prompt.search("Search room:", rooms, (q) -> ((x) -> x.getRoomType().getLabel().equalsIgnoreCase(q))));
-                    step++;
-                    break;
-            
-                case 3:
                     booking.setCheckInTime(LocalDateTime.parse(Prompt.string("Enter check-in time: ", (x) -> {
                         try { LocalDateTime.parse(x); return null; }
                         catch (Exception e) { return "Invalid date time"; }
@@ -59,19 +54,24 @@ public class MainController {
                     step++;
                     break;
     
-                case 4:
+                case 3:
                     booking.setCheckOutTime(LocalDateTime.parse(Prompt.string("Enter check-out time: ", (x) -> {
                         try { LocalDateTime.parse(x); return null; }
                         catch (Exception e) { return "Invalid date time"; }
                     })));
                     Boolean isOverlap = bookings.stream().anyMatch(x -> x.getRoom().equals(booking.getRoom()) && 
-                        (x.getCheckInTime().isBefore(x.getCheckOutTime()) || x.getCheckOutTime().isAfter(x.getCheckInTime())));
+                        (x.getCheckInTime().isBefore(x.getCheckOutTime()) && x.getCheckOutTime().isAfter(x.getCheckInTime())));
                     if (Boolean.TRUE.equals(isOverlap)) {
                         System.out.println("Room is occupied at given time");
                         step = 3;
                     } else {
                         step++;
                     }
+                    break;
+            
+                case 4:
+                    booking.setRoom(Prompt.search("Search room:", rooms, (q) -> ((x) -> x.getRoomType().getLabel().equalsIgnoreCase(q))));
+                    step++;
                     break;
     
                 default:
