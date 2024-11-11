@@ -4,17 +4,20 @@ import IGeneral.Entity.Entity;
 
 public class Product extends Entity {
     private String name;
-    private String price;
+    private double price;
+    private int quantity;
 
     public Product() {}
-    public Product(String name, String price) {
+    public Product(String name, double price, int quantity) {
         this.name = name;
         this.price = price;
+        this.quantity = quantity;
     }
-    public Product(long id, String name, String price) {
+    public Product(long id, String name, double price, int quantity) {
         super(id);
         this.name = name;
         this.price = price;
+        this.quantity = quantity;
     }
 
     public String getName() {
@@ -23,10 +26,10 @@ public class Product extends Entity {
     public void setName(String name) {
         this.name = name;
     }
-    public String getPrice() {
+    public double getPrice() {
         return price;
     }
-    public void setPrice(String price) {
+    public void setPrice(double price) {
         this.price = price;
     }
     
@@ -35,6 +38,7 @@ public class Product extends Entity {
     public String toString() {
         return id + Entity.PROPERTY_SEPARATOR
             + name + Entity.PROPERTY_SEPARATOR 
-            + price;
+            + price + Entity.PROPERTY_SEPARATOR 
+            + quantity;
     }
 }
