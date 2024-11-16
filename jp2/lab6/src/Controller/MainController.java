@@ -5,11 +5,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.time.YearMonth;
 import java.util.List;
-import java.util.stream.Collector;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+import Entity.ProductMonthlyCR;
 import Entity.ProductMonthlyPerformance;
-import Service.ProductDailyPerformanceService;
 
 public class MainController {
     private ProductDailyPerformanceController dailyPerf;
@@ -19,12 +19,15 @@ public class MainController {
     }
 
     public void aggregate() {
-        List<ProductMonthlyPerformance> monthlyPref = dailyPerf.stream().collect(Collectors.groupingBy(
-            x -> new ProductMonthlyPerformance(
-                x.getProductId() * 31 + YearMonth.of(x.getPeriod().getYear(), x.getPeriod().getMonth()).hashCode(),
-                x.getProductId(), 
-                YearMonth.of(x.getPeriod().getYear(), x.getPeriod().getMonth())
-            )
+        List<ProductMonthlyCR> monthlyCR = dailyPerf.stream().collect(Collectors.groupingBy(
+            x -> {
+                YearMonth period = YearMonth.of(x.getPeriod().getYear(), x.getPeriod().getMonth());
+                return new ProductMonthlyPerformance(
+                    Objects.hash(x.getProductId(), period),
+                    x.getProductId(), 
+                    period
+                );
+            }
         )).entrySet().stream().map(x -> {
             ProductMonthlyPerformance key = x.getKey();
             x.getValue().stream().forEach(y -> {
@@ -32,13 +35,13 @@ public class MainController {
                 key.setAddToCartCount(key.getAddToCartCount() + y.getAddToCartCount());
                 key.setCheckoutCount(key.getCheckoutCount() + y.getCheckoutCount());
             });
-            return key;
+            return new ProductMonthlyCR(key);
         }).collect(Collectors.toList());
 
         try {
             File file = new File(System.getProperty("user.dir"), "jp2/lab7/data/product_monthly_perf.out.txt");
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-            monthlyPref.stream().forEach(x -> {
+            monthlyCR.stream().forEach(x -> {
                 try {
                     writer.write(x.toSaveString());
                     writer.newLine();
