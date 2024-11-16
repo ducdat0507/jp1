@@ -20,13 +20,13 @@ public class ProductMonthlyCR extends Entity {
         this.productId = productId;
         this.period = period;
     }
-    public ProductMonthlyCR(long productId, YearMonth period, data addToCartCR, data checkoutCR) {
+    public ProductMonthlyCR(long productId, YearMonth period, double addToCartCR, double checkoutCR) {
         this.productId = productId;
         this.period = period;
         this.addToCartCR = addToCartCR;
         this.checkoutCR = checkoutCR;
     }
-    public ProductMonthlyCR(long id, long productId, YearMonth period, data addToCartCR, data checkoutCR) {
+    public ProductMonthlyCR(long id, long productId, YearMonth period, double addToCartCR, double checkoutCR) {
         super(id);
         this.productId = productId;
         this.period = period;
