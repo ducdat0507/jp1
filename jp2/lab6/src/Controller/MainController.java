@@ -39,7 +39,7 @@ public class MainController {
         }).collect(Collectors.toList());
 
         try {
-            File file = new File(System.getProperty("user.dir"), "jp2/lab7/data/product_monthly_perf.out.txt");
+            File file = new File(System.getProperty("user.dir"), "data/product_monthly_perf.out.txt");
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
             monthlyCR.stream().forEach(x -> {
                 try {
