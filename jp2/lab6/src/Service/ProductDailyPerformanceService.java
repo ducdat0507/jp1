@@ -8,7 +8,7 @@ import IGeneral.Entity.PersistentEntityService;
 public class ProductDailyPerformanceService extends PersistentEntityService<ProductDailyPerformance> {
 
     public ProductDailyPerformanceService () {
-        super(new File(System.getProperty("user.dir"), "data/product_daily_perf.in.txt"));
+        super(new File(System.getProperty("user.dir"), "jp2/lab6/data/product_daily_perf.in.txt"));
     }
 
     @Override
