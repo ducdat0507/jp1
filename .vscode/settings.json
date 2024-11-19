@@ -2,4 +2,5 @@
   "java.project.sourcePaths": [
     "jp2/lab6/src"
   ],
+  "java.configuration.updateBuildConfiguration": "interactive",
 }
