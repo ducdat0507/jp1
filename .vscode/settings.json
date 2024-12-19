@@ -1,6 +1,6 @@
 {
   "java.project.sourcePaths": [
-    "jp2/Hello/src"
+    "jp2/Particle/src"
   ],
   "java.configuration.updateBuildConfiguration": "interactive",
 }
