@@ -12,6 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -26,7 +27,7 @@ public class HomeController {
     @FXML private TableColumn<Person, String> tableLastNameColumn;
     @FXML private TableColumn<Person, LocalDate> tableDateOfBirthColumn;
 
-    @FXML private Pane formPane;
+    @FXML private ScrollPane formPane;
     private FormController formController;
 
     @FXML
@@ -40,7 +41,7 @@ public class HomeController {
     private void setForm(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(FormController.class.getResource(fxml + ".fxml"));
         Pane form = fxmlLoader.load();
-        formPane.getChildren().setAll(form);
+        formPane.setContent(form);
         formController = fxmlLoader.getController();
         formController.setParent(this);
     }

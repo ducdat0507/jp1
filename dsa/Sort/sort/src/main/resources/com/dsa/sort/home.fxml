@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ScrollPane?>
 
 <HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dsa.sort.HomeController">
    <children>
@@ -32,6 +33,6 @@
             </HBox>
          </children>
       </VBox>
-      <VBox fx:id="formPane" prefWidth="320.0" />
+      <ScrollPane fx:id="formPane" prefWidth="360.0" fitToWidth="true" />
    </children>
 </HBox>
