@@ -12,7 +12,7 @@ public class InsertionSortAlgorithm<T> implements SortAlgorithm<T> {
         for (int i = 1; i < len; i++) {
             T value = list.get(i);
             int j = i - 1;
-            while (j >= 0 && comparator.compare(list.get(i), value) > 0) {
+            while (j >= 0 && comparator.compare(list.get(j), value) > 0) {
                 list.set(j + 1, list.get(j));
                 j--;
             }

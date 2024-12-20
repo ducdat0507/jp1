@@ -20,6 +20,10 @@ public abstract class FormController {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setHeaderText(header);
         alert.setContentText(content);
-        alert.show();;
+        alert.show();
+    }
+
+    protected void showValidationError(String content) {
+        showPopupError("Validation failed", content);
     }
 }

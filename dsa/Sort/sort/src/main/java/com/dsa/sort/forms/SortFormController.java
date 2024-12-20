@@ -1,8 +1,11 @@
 package com.dsa.sort.forms;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.Supplier;
 
 import com.dsa.sort.entities.Person;
@@ -12,25 +15,31 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 
 public class SortFormController extends FormController {
 
-    public Map<String, Supplier<SortAlgorithm<Person>>> sorts = Map.ofEntries(
-        Map.entry("Bubble Sort", () -> new BubbleSortAlgorithm<Person>()),
-        Map.entry("Insertion Sort", () -> new InsertionSortAlgorithm<Person>())
-    );
+    public SortedMap<String, Supplier<SortAlgorithm<Person>>> sorts = new TreeMap<>();
 
-    public Map<String, Comparator<Person>> criterias = Map.ofEntries(
-        Map.entry("Full Name", Comparator.comparing(Person::getFullName)),
-        Map.entry("Date of Birth", Comparator.comparing(Person::getDateOfBirth))
-    );
+    public SortedMap<String, Comparator<Person>> criterias = new TreeMap<>();
 
     @FXML private ChoiceBox<String> sortChoiceBox;
     @FXML private ChoiceBox<String> criteriaChoiceBox;
+    @FXML private Label resultLabel;
 
+    private void initMaps() {
+        sorts.put(   "Bubble Sort", () -> new BubbleSortAlgorithm<Person>());
+        sorts.put("Insertion Sort", () -> new InsertionSortAlgorithm<Person>());
+        sorts.put("Selection Sort", () -> new SelectionSortAlgorithm<Person>());
+        
+        criterias.put(    "Full Name", Comparator.comparing(Person::getFullName));
+        criterias.put("Date of Birth", Comparator.comparing(Person::getDateOfBirth));
+    }
 
     @FXML 
     private void initialize() {
+        initMaps();
+
         sortChoiceBox.setItems(FXCollections.observableList(sorts.keySet().stream().toList()));
         criteriaChoiceBox.setItems(FXCollections.observableList(criterias.keySet().stream().toList()));
     }
@@ -42,17 +51,21 @@ public class SortFormController extends FormController {
 
 
         if (sort == null || sort.isEmpty()) {
-            showPopupError("Validation failed", "Sort is required");
+            showValidationError("Sort is required");
             return;
         }
         if (criteria == null ||criteria.isEmpty()) {
-            showPopupError("Validation failed", "Criteria is required");
+            showValidationError("Criteria is required");
             return;
         }
 
+        Instant startTime = Instant.now();
         getParent().sortPeople(
             sorts.get(sort).get(),
             criterias.get(criteria)
         );
+        Instant endTime = Instant.now();
+
+        resultLabel.setText("Took " + FormUtils.formatDuration(Duration.between(startTime, endTime).toNanos()));
     }
 }

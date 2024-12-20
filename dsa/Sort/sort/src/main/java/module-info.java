@@ -1,6 +1,7 @@
 module com.dsa.sort {
     requires javafx.controls;
     requires javafx.fxml;
+    requires net.datafaker;
 
     opens com.dsa.sort to javafx.fxml;
     opens com.dsa.sort.forms to javafx.fxml;

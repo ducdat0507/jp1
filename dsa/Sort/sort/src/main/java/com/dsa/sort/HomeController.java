@@ -59,6 +59,11 @@ public class HomeController {
     private void onSortButtonClick() {
         setFormSafe("sort");
     }
+    
+    @FXML
+    private void onGenerateButtonClick() {
+        setFormSafe("generate");
+    }
 
     public void addPerson(Person person) {
         people.add(person);

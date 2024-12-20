@@ -25,6 +25,7 @@
                </VBox.margin>
                <children>
                   <Button onAction="#onAddPersonButtonClick" text="Add Person" />
+                  <Button onAction="#onGenerateButtonClick" text="Generate" />
                   <Pane HBox.hgrow="ALWAYS" />
                   <Button onAction="#onSortButtonClick" text="Sort" />
                </children>

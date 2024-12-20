@@ -32,15 +32,15 @@ public class AddPersonFormController extends FormController {
         LocalDate dateOfBirth = dateOfBirthField.getValue();
 
         if (firstName == null || firstName.isEmpty()) {
-            showPopupError("Validation failed", "First name is required");
+            showValidationError("First name is required");
             return;
         }
         if (lastName == null || lastName.isEmpty()) {
-            showPopupError("Validation failed", "Last name is required");
+            showValidationError("Last name is required");
             return;
         }
         if (dateOfBirth == null) {
-            showPopupError("Validation failed", "Date of birth is required");
+            showValidationError("Date of birth is required");
             return;
         }
 
