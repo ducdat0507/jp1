@@ -32,7 +32,7 @@ public class SortFormController extends FormController {
         sorts.put("Insertion Sort", () -> new InsertionSortAlgorithm<Person>());
         sorts.put("Selection Sort", () -> new SelectionSortAlgorithm<Person>());
         
-        criterias.put(    "Full Name", Comparator.comparing(Person::getFullName));
+        criterias.put(    "Full Name", Comparator.comparing(Person::getSortName));
         criterias.put("Date of Birth", Comparator.comparing(Person::getDateOfBirth));
     }
 
@@ -58,6 +58,8 @@ public class SortFormController extends FormController {
             showValidationError("Criteria is required");
             return;
         }
+
+        getParent().randomizePeople();
 
         Instant startTime = Instant.now();
         getParent().sortPeople(

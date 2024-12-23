@@ -3,6 +3,8 @@ package com.dsa.sort;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.Random;
+import java.util.stream.Collector;
 
 import com.dsa.sort.entities.Person;
 import com.dsa.sort.forms.FormController;
@@ -29,6 +31,8 @@ public class HomeController {
 
     @FXML private ScrollPane formPane;
     private FormController formController;
+    
+    Random random = new Random();
 
     @FXML
     private void initialize() {
@@ -70,7 +74,18 @@ public class HomeController {
         people.add(person);
     }
 
+    public void randomizePeople() 
+    {
+        for (int i = people.size() - 1; i >= 1; i--) {
+            int j = random.nextInt(i + 1);
+            Person temp = people.get(i);
+            people.set(i, people.get(j));
+            people.set(j, temp);
+        }
+    }
+
     public void sortPeople(SortAlgorithm<Person> sortAlgorithm, Comparator<Person> comparator) {
-        sortAlgorithm.sort(people, comparator);
+        people = FXCollections.observableArrayList(sortAlgorithm.sort(people.toArray(new Person[0]), comparator));
+        mainTable.setItems(people);
     }
 }

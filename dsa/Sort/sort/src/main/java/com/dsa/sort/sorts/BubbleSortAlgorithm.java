@@ -6,15 +6,15 @@ import java.util.List;
 public class BubbleSortAlgorithm<T> implements SortAlgorithm<T> {
 
     @Override
-    public List<T> sort(List<T> list, Comparator<T> comparator) {
-        int len = list.size();
+    public T[] sort(T[] list, Comparator<T> comparator) {
+        int len = list.length;
 
         boolean swapped = false;
 
         do {
             swapped = false;
             for (int i = 0; i < len - 1; i++) {
-                if (comparator.compare(list.get(i), list.get(i + 1)) > 0) {
+                if (comparator.compare(list[i], list[i + 1]) > 0) {
                     SortUtils.swap(list, i, i + 1);
                     swapped = true;
                 }

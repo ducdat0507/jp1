@@ -6,13 +6,13 @@ import java.util.List;
 public class SelectionSortAlgorithm<T> implements SortAlgorithm<T> {
 
     @Override
-    public List<T> sort(List<T> list, Comparator<T> comparator) {
-        int len = list.size();
+    public T[] sort(T[] list, Comparator<T> comparator) {
+        int len = list.length;
 
         for (int i = 0; i < len - 1; i++) {
             int minIndex = i;
             for (int j = i + 1; j < len; j++) {
-                if (comparator.compare(list.get(j), list.get(minIndex)) < 0) {
+                if (comparator.compare(list[j], list[minIndex]) < 0) {
                     minIndex = j;
                 }
             }

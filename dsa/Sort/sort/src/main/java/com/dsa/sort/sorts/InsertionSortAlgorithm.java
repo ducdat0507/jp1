@@ -6,17 +6,17 @@ import java.util.List;
 public class InsertionSortAlgorithm<T> implements SortAlgorithm<T> {
 
     @Override
-    public List<T> sort(List<T> list, Comparator<T> comparator) {
-        int len = list.size();
+    public T[] sort(T[] list, Comparator<T> comparator) {
+        int len = list.length;
 
         for (int i = 1; i < len; i++) {
-            T value = list.get(i);
+            T value = list[i];
             int j = i - 1;
-            while (j >= 0 && comparator.compare(list.get(j), value) > 0) {
-                list.set(j + 1, list.get(j));
+            while (j >= 0 && comparator.compare(list[j], value) > 0) {
+                list[j + 1] = list[j];
                 j--;
             }
-            list.set(j + 1, value);
+            list[j + 1] = value;
         }
 
         return list;

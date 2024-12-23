@@ -41,4 +41,8 @@ public class Person {
         return firstName + " " + lastName;
     }
 
+    public String getSortName() {
+        return lastName + ", " + firstName;
+    }
+
 }
