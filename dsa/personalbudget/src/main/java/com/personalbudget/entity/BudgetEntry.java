@@ -8,7 +8,7 @@ public abstract class BudgetEntry {
     private String description;
     private double amount;
 
-    public class Income extends BudgetEntry {
+    public static class Income extends BudgetEntry {
         public Income(Instant instant, String category, String description, double amount) {
             super(instant, category, description, amount);
         }
@@ -22,9 +22,14 @@ public abstract class BudgetEntry {
         public double getDelta() {
             return getAmount();
         }
+
+        @Override
+        public String toString() {
+            return "Income [instant = " + getInstant() + ", category = " + getCategory() + ", description = " + getDescription() + ", amount = " + getAmount() + "]";
+        }
     }
 
-    public class Expense extends BudgetEntry {
+    public static class Expense extends BudgetEntry {
         public Expense(Instant instant, String category, String description, double amount) {
             super(instant, category, description, amount);
         }
@@ -37,6 +42,11 @@ public abstract class BudgetEntry {
         @Override
         public double getDelta() {
             return -getAmount();
+        }
+
+        @Override
+        public String toString() {
+            return "Expense [instant = " + getInstant() + ", category = " + getCategory() + ", description = " + getDescription() + ", amount = " + getAmount() + "]";
         }
     }
 

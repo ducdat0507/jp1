@@ -1,0 +1,16 @@
+* {
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+.nav-title {
+    -fx-font-style: italic;
+    -fx-font-weight: bold;
+    -fx-font-size: 2em;
+}
+.nav-title.clickable:hover {
+    -fx-text-fill: blue;
+    -fx-underline: true;
+}
+.nav-title.clickable:pressed {
+    -fx-text-fill: inherit;
+    -fx-underline: true;
+}
