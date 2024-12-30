@@ -7,13 +7,15 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 
-<VBox alignment="CENTER" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.personalbudget.controller.PrimaryController">
+<VBox alignment="CENTER" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.personalbudget.controller.PrimaryController">
    <children>
       <MenuBar useSystemMenuBar="true">
         <menus>
@@ -67,6 +69,20 @@
                </children>
             </HBox>
             <Pane HBox.hgrow="ALWAYS" />
+            <HBox alignment="CENTER" fillHeight="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="nav-tab-buttons">
+               <children>
+                  <ToggleButton fx:id="summaryTabButton" mnemonicParsing="false" selected="true" styleClass="button" text="Summary">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="screenMainTabs" />
+                     </toggleGroup>
+                  </ToggleButton>
+                  <ToggleButton fx:id="calendarTabButton" disable="true" mnemonicParsing="false" styleClass="button" text="Calendar" toggleGroup="$screenMainTabs" />
+                  <ToggleButton fx:id="recordTabButton" mnemonicParsing="false" styleClass="button" text="Records" toggleGroup="$screenMainTabs" />
+               </children>
+               <padding>
+                  <Insets bottom="-1.0" left="-1.0" right="-1.0" />
+               </padding>
+            </HBox>
          </children>
          <effect>
             <DropShadow blurType="GAUSSIAN" height="6.0" offsetY="2.0" radius="2.5" width="6.0">
@@ -83,8 +99,8 @@
          </padding>
          <children>
             <Pane HBox.hgrow="ALWAYS" />
-            <Button mnemonicParsing="false" text="Add Income" />
-            <Button mnemonicParsing="false" text="Add Expense" />
+            <Button mnemonicParsing="false" styleClass="footer-big-button" text="Add Income" />
+            <Button mnemonicParsing="false" styleClass="footer-big-button" text="Add Expense" />
          </children>
       </HBox>
    </children>

@@ -8,13 +8,19 @@ import java.time.ZonedDateTime;
 
 import com.personalbudget.App;
 import com.personalbudget.constants.DateRange;
-import com.personalbudget.controller.screens.AbstractScreenController;
+import com.personalbudget.controller.screens.MonthCalendarScreenController;
 import com.personalbudget.controller.screens.ScreenController;
+import com.personalbudget.controller.screens.SummaryScreenController;
 import com.personalbudget.entities.BudgetEntry;
 import com.personalbudget.entities.BudgetRecord;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 import net.datafaker.Faker;
 
@@ -25,6 +31,11 @@ public class PrimaryController {
     private LocalDate dateFrom = YearMonth.now().atDay(1);
     private LocalDate dateTo = YearMonth.now().atDay(1);
 
+    @FXML private ToggleButton summaryTabButton;
+    @FXML private ToggleButton calendarTabButton;
+    @FXML private ToggleButton recordTabButton;
+    private ToggleButton currentTabButton;
+
     @FXML
     private Pane screenPane;
     private ScreenController screenController;
@@ -32,6 +43,16 @@ public class PrimaryController {
     public BudgetRecord getRecord() { 
         return record; 
     }
+    public DateRange getDateRange() {
+        return dateRange;
+    }
+    public LocalDate getDateFrom() {
+        return dateFrom;
+    }
+    public LocalDate getDateTo() {
+        return dateTo;
+    }
+    
 
     @FXML
     private void initialize() {
@@ -54,9 +75,18 @@ public class PrimaryController {
         }
         record.entryStream().forEach(x -> System.out.println(x.toString()));
 
-        setScreenSafe("summary");
-    }
+        // 
+        ToggleGroup tabGroup = new ToggleGroup();
+        tabGroup.getToggles().addAll(summaryTabButton, calendarTabButton, recordTabButton);
+        tabGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+            @Override
+            public void changed(ObservableValue<? extends Toggle> prop, Toggle from, Toggle to) {
+                setTab((ToggleButton)to);
+            }
+        });
 
+        setTab(summaryTabButton);
+    }
 
     private void setScreen(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("screens/" + fxml + ".fxml"));
@@ -71,5 +101,29 @@ public class PrimaryController {
     private boolean setScreenSafe(String fxml) {
         try { setScreen(fxml); return true; }
         catch (IOException e) { e.printStackTrace(); return false; }
+    }
+
+    private void updateTabUI() {
+        summaryTabButton.setDisable(currentTabButton == summaryTabButton);
+        calendarTabButton.setDisable(currentTabButton == calendarTabButton);
+        recordTabButton.setDisable(currentTabButton == recordTabButton);
+    }
+
+    private void setTab(ToggleButton tabButton) {
+        currentTabButton = tabButton;
+        tabButton.setSelected(true);
+
+        if (currentTabButton == summaryTabButton) {
+            if (screenController instanceof SummaryScreenController || setScreenSafe("summary")) {
+                ((SummaryScreenController)screenController).updateSummary();
+            }
+        }
+        else if (currentTabButton == calendarTabButton) {
+            if (screenController instanceof MonthCalendarScreenController || setScreenSafe("month-calendar")) {
+                ((MonthCalendarScreenController)screenController).updateCalendar();
+            }
+        }
+
+        updateTabUI();
     }
 }

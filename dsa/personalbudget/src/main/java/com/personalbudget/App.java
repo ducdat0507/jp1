@@ -20,6 +20,7 @@ public class App extends Application {
         scene = new Scene(loadFXML("primary"), 960, 600);
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
         stage.setTitle("Personal Budget Manager");
+        stage.setMinHeight(520); stage.setMinWidth(800);
         stage.setScene(scene);
         stage.show();
     } 

@@ -41,9 +41,9 @@ public class BudgetRecord {
         if (index < 0) return summary;
         else monthRecord = entries.get(index);
 
-        summary.setProfitByCategory(monthRecord.getAllCategoriesMonthlyProfits());
-        summary.getProfitByCategory().entrySet().forEach(entry -> {
-            summary.setTotalProfits(summary.getTotalProfits() + entry.getValue());
+        summary.setIncomeByCategory(monthRecord.getAllCategoriesMonthlyIncomes());
+        summary.getIncomeByCategory().entrySet().forEach(entry -> {
+            summary.setTotalIncomes(summary.getTotalIncomes() + entry.getValue());
         });
         summary.setExpenseByCategory(monthRecord.getAllCategoriesMonthlyExpenses());
         summary.getExpenseByCategory().entrySet().forEach(entry -> {

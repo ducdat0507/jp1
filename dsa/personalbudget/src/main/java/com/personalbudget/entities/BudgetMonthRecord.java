@@ -16,14 +16,14 @@ public class BudgetMonthRecord {
     private List<BudgetEntry> entries;
     private Index<String, BudgetEntry> categoryIndex;
 
-    private Map<String, Double> totalProfits;
+    private Map<String, Double> totalIncomes;
     private Map<String, Double> totalExpenses;
 
     public BudgetMonthRecord(YearMonth time) {
         this.time = time;
         entries = new ArrayList<>();
         categoryIndex = new Index<>();
-        totalProfits = new HashMap<>();
+        totalIncomes = new HashMap<>();
         totalExpenses = new HashMap<>();
     }
 
@@ -40,8 +40,8 @@ public class BudgetMonthRecord {
         categoryIndex.add(category, entry);
 
         if (entry.isIncome()) {
-            if (totalProfits.containsKey(category)) totalProfits.put(category, totalProfits.get(category) + entry.getAmount());
-            else totalProfits.put(category, entry.getAmount());
+            if (totalIncomes.containsKey(category)) totalIncomes.put(category, totalIncomes.get(category) + entry.getAmount());
+            else totalIncomes.put(category, entry.getAmount());
         } else {
             if (totalExpenses.containsKey(category)) totalExpenses.put(category, totalExpenses.get(category) + entry.getAmount());
             else totalExpenses.put(category, entry.getAmount());
@@ -56,11 +56,11 @@ public class BudgetMonthRecord {
         this.time = time;
     }
 
-    public Map<String, Double> getAllCategoriesMonthlyProfits() {
-        return Collections.unmodifiableMap(totalProfits);
+    public Map<String, Double> getAllCategoriesMonthlyIncomes() {
+        return Collections.unmodifiableMap(totalIncomes);
     }
-    public double getOneCategoryMonthlyProfits(String category) {
-        return totalProfits.containsKey(category) ? totalProfits.get(category) : 0;
+    public double getOneCategoryMonthlyIncomes(String category) {
+        return totalIncomes.containsKey(category) ? totalIncomes.get(category) : 0;
     }
     public Map<String, Double> getAllCategoriesMonthlyExpenses() {
         return Collections.unmodifiableMap(totalExpenses);
