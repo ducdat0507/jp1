@@ -1,4 +1,4 @@
-package com.personalbudget.entity;
+package com.personalbudget.entities;
 
 import java.time.YearMonth;
 import java.util.ArrayList;

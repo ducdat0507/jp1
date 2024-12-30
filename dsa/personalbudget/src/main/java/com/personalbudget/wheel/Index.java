@@ -21,9 +21,7 @@ public class Index<T extends Comparable<T>, U> {
 
     private Node root;
 
-    public Index() {
-
-    }
+    public Index() {}
 
     public List<U> get(T index) {
         Node node = root;

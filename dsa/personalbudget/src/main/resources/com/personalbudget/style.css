@@ -1,9 +1,20 @@
 * {
     -fx-font-family: "Segoe UI", sans-serif;
 }
+
+.big-text {
+    -fx-font-weight: lighter;
+    -fx-font-size: 2em;
+}
+
+.big-nav {
+    -fx-background-color: #fffeb5;
+    -fx-border-color: #0000 #0000 #f8c4a2 #0000;
+    -fx-border-insets: 0 0 1px 0;
+}
 .nav-title {
+    -fx-font-weight: lighter;
     -fx-font-style: italic;
-    -fx-font-weight: bold;
     -fx-font-size: 2em;
 }
 .nav-title.clickable:hover {

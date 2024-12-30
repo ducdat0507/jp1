@@ -1,4 +1,4 @@
-package com.personalbudget.entity;
+package com.personalbudget.entities;
 
 import java.time.OffsetDateTime;
 import java.time.YearMonth;
@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
-
-import com.personalbudget.wheel.Index;
 
 public class BudgetRecord {
     private List<BudgetMonthRecord> entries;
@@ -32,5 +30,25 @@ public class BudgetRecord {
 
     public Stream<BudgetEntry> entryStream() {
         return entries.stream().flatMap(BudgetMonthRecord::entryStream);
+    }
+    
+    public BudgetSummary getMonthSummary(YearMonth yearMonth) {
+        BudgetSummary summary = new BudgetSummary();
+
+        BudgetMonthRecord monthRecord = new BudgetMonthRecord(yearMonth);
+        int index = Collections.binarySearch(entries, monthRecord, Comparator.comparing(BudgetMonthRecord::getTime));
+
+        if (index < 0) return summary;
+        else monthRecord = entries.get(index);
+
+        summary.setProfitByCategory(monthRecord.getAllCategoriesMonthlyProfits());
+        summary.getProfitByCategory().entrySet().forEach(entry -> {
+            summary.setTotalProfits(summary.getTotalProfits() + entry.getValue());
+        });
+        summary.setExpenseByCategory(monthRecord.getAllCategoriesMonthlyExpenses());
+        summary.getExpenseByCategory().entrySet().forEach(entry -> {
+            summary.setTotalExpenses(summary.getTotalExpenses() + entry.getValue());
+        });
+        return summary;
     }
 }
