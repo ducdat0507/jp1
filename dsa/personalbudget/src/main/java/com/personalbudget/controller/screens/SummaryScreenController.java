@@ -3,6 +3,7 @@ package com.personalbudget.controller.screens;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.Currency;
 
 import com.personalbudget.constants.DateRange;
 import com.personalbudget.entities.BudgetSummary;
@@ -42,10 +43,12 @@ public class SummaryScreenController extends AbstractScreenController {
     }
 
     public void updateUI() {
-        NumberFormat formatter = NumberFormat.getCurrencyInstance();
-        totalIncomeLabel.setText(formatter.format(summary.getTotalIncomes()));
-        totalExpenseLabel.setText(formatter.format(summary.getTotalExpenses()));
-        totalBalanceLabel.setText(formatter.format(summary.getTotalIncomes() - summary.getTotalExpenses()));
+        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
+        currencyFormatter.setCurrency(Currency.getInstance(parent.getRecord().getCurrency()));
+
+        totalIncomeLabel.setText(currencyFormatter.format(summary.getTotalIncomes()));
+        totalExpenseLabel.setText(currencyFormatter.format(summary.getTotalExpenses()));
+        totalBalanceLabel.setText(currencyFormatter.format(summary.getTotalIncomes() - summary.getTotalExpenses()));
 
         incomeByCategoryChart.setData(FXCollections.observableList(
             summary.getIncomeByCategory().entrySet().stream().map(

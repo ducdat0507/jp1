@@ -1,5 +1,6 @@
 package com.personalbudget.entities;
 
+import java.text.NumberFormat;
 import java.time.Instant;
 
 public abstract class BudgetEntry {
@@ -53,7 +54,7 @@ public abstract class BudgetEntry {
     protected BudgetEntry(Instant instant, String category, String description, double amount) {
         this.instant = instant;
         this.category = category;
-        this.category = description;
+        this.description = description;
         this.amount = amount;
     }
 
@@ -84,4 +85,5 @@ public abstract class BudgetEntry {
 
     public abstract boolean isIncome();
     public abstract double getDelta();
+
 }

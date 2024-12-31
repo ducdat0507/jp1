@@ -9,6 +9,7 @@ import java.time.ZonedDateTime;
 import com.personalbudget.App;
 import com.personalbudget.constants.DateRange;
 import com.personalbudget.controller.screens.MonthCalendarScreenController;
+import com.personalbudget.controller.screens.RecordScreenController;
 import com.personalbudget.controller.screens.ScreenController;
 import com.personalbudget.controller.screens.SummaryScreenController;
 import com.personalbudget.entities.BudgetEntry;
@@ -27,7 +28,7 @@ import net.datafaker.Faker;
 public class PrimaryController {
     private BudgetRecord record = new BudgetRecord();
 
-    private DateRange dateRange = DateRange.DAY;
+    private DateRange dateRange = DateRange.MONTH;
     private LocalDate dateFrom = YearMonth.now().atDay(1);
     private LocalDate dateTo = YearMonth.now().atDay(1);
 
@@ -56,6 +57,8 @@ public class PrimaryController {
 
     @FXML
     private void initialize() {
+        record.setCurrency("VND");
+
         Faker faker = new Faker();
         Instant timeFrom = ZonedDateTime.parse("2024-01-01T00:00:00Z").toInstant();
         for (int a = 0; a < 1000; a++) 
@@ -121,6 +124,11 @@ public class PrimaryController {
         else if (currentTabButton == calendarTabButton) {
             if (screenController instanceof MonthCalendarScreenController || setScreenSafe("month-calendar")) {
                 ((MonthCalendarScreenController)screenController).updateCalendar();
+            }
+        }
+        else if (currentTabButton == recordTabButton) {
+            if (screenController instanceof RecordScreenController || setScreenSafe("records")) {
+                ((RecordScreenController)screenController).updateTable();
             }
         }
 

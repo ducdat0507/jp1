@@ -46,7 +46,23 @@ public class BudgetMonthRecord {
             if (totalExpenses.containsKey(category)) totalExpenses.put(category, totalExpenses.get(category) + entry.getAmount());
             else totalExpenses.put(category, entry.getAmount());
         }
-        
+    }
+
+    public void remove(BudgetEntry entry) {
+        int index = Collections.binarySearch(entries, entry, Comparator.comparing(BudgetEntry::getInstant));
+        if (index >= 0) index = -index - 1;
+        else return;
+
+        String category = entry.getCategory();
+        categoryIndex.add(category, entry);
+
+        if (entry.isIncome()) {
+            if (totalIncomes.containsKey(category)) totalIncomes.put(category, totalIncomes.get(category) + entry.getAmount());
+            else totalIncomes.put(category, entry.getAmount());
+        } else {
+            if (totalExpenses.containsKey(category)) totalExpenses.put(category, totalExpenses.get(category) + entry.getAmount());
+            else totalExpenses.put(category, entry.getAmount());
+        }
     }
     
     public YearMonth getTime() {

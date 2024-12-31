@@ -41,6 +41,9 @@ public class Index<T extends Comparable<T>, U> {
     public void add(T index, U value) {
         insertNode(root, index).values.add(value);
     }
+    public void remove(T index, U value) {
+        get(index).remove(value);
+    }
 
     private int getHeight(Node node) {
         return node == null ? 0 : node.height;
