@@ -84,35 +84,15 @@ public class PrimaryController {
     @FXML
     private void initialize() {
         record.setCurrency("VND"); 
-
         List<String> incomeCats = List.of(
             "Salary", "Other"
         );
         record.getIncomeCategories().addAll(incomeCats);
-
         List<String> expenseCats = List.of(
             "Housing", "Water", "Food", "Electricity", "Internet", "Other"
         );
         record.getExpenseCategories().addAll(expenseCats);
-
-        Faker faker = new Faker();
-        Instant timeFrom = ZonedDateTime.parse("2024-01-01T00:00:00Z").toInstant();
-        for (int a = 0; a < 1000; a++) 
-        {
-            record.addEntry(new BudgetEntry.Income(
-                Instant.ofEpochMilli(faker.number().numberBetween(timeFrom.toEpochMilli(), Instant.now().toEpochMilli())).atZone(ZoneId.of("GMT")).toLocalDate(),
-                incomeCats.get(faker.random().nextInt(incomeCats.size())),
-                faker.famousLastWords().lastWords() + " " + faker.lorem().paragraph(),
-                faker.number().numberBetween(1200, 2000000)
-            ));
-            record.addEntry(new BudgetEntry.Expense(
-                Instant.ofEpochMilli(faker.number().numberBetween(timeFrom.toEpochMilli(), Instant.now().toEpochMilli())).atZone(ZoneId.of("GMT")).toLocalDate(),
-                expenseCats.get(faker.random().nextInt(expenseCats.size())),
-                faker.famousLastWords().lastWords() + " " + faker.lorem().paragraph(),
-                faker.number().numberBetween(1200, 1800000)
-            ));
-        }
-        record.entryStream().forEach(x -> System.out.println(x.toString()));
+        record.bindFolder("default");
 
         // 
         ToggleGroup tabGroup = new ToggleGroup();
@@ -355,5 +335,32 @@ public class PrimaryController {
     public void openEditEntryForm(BudgetEntry entry) {
         EntryEditFormController form = getCurrentOrSetForm(EntryEditFormController.class, "entry");
         form.setOldEntry(entry);
+    }
+
+    public void handleSave() {
+        record.save();
+    }
+
+    public void handleGenerateData() {
+        List<String> incomeCats = record.getIncomeCategories().stream().toList();
+        List<String> expenseCats = record.getExpenseCategories().stream().toList();
+        Faker faker = new Faker();
+        Instant timeFrom = ZonedDateTime.parse("2024-01-01T00:00:00Z").toInstant();
+        for (int a = 0; a < 1000; a++) 
+        {
+            record.addEntry(new BudgetEntry.Income(
+                Instant.ofEpochMilli(faker.number().numberBetween(timeFrom.toEpochMilli(), Instant.now().toEpochMilli())).atZone(ZoneId.of("GMT")).toLocalDate(),
+                incomeCats.get(faker.random().nextInt(incomeCats.size())),
+                faker.famousLastWords().lastWords() + " " + faker.lorem().paragraph(),
+                faker.number().numberBetween(1200, 2000000)
+            ));
+            record.addEntry(new BudgetEntry.Expense(
+                Instant.ofEpochMilli(faker.number().numberBetween(timeFrom.toEpochMilli(), Instant.now().toEpochMilli())).atZone(ZoneId.of("GMT")).toLocalDate(),
+                expenseCats.get(faker.random().nextInt(expenseCats.size())),
+                faker.famousLastWords().lastWords() + " " + faker.lorem().paragraph(),
+                faker.number().numberBetween(1200, 1800000)
+            ));
+        }
+        record.entryStream().forEach(x -> System.out.println(x.toString()));
     }
 }

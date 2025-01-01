@@ -1,5 +1,12 @@
 package com.personalbudget.entities;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -7,61 +14,71 @@ import java.time.OffsetDateTime;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Stream;
 
+import org.json.JSONObject;
+import org.json.JSONWriter;
+
 public class BudgetRecord {
-    private List<BudgetMonthRecord> entries;
+    private Map<YearMonth, BudgetMonthRecord> entries;
 
     private String currency;
     public String getCurrency() { return currency; }
-    public void setCurrency(String currency) { this.currency = currency; }
+    public void setCurrency(String currency) { 
+        this.currency = currency;
+        isDirty = true;
+    }
 
-    public final Set<String> incomeCategories = new TreeSet<>();
+    private final Set<String> incomeCategories = new TreeSet<>();
     public Set<String> getIncomeCategories() { return incomeCategories; }
-    public final Set<String> expenseCategories = new TreeSet<>();
+    private final Set<String> expenseCategories = new TreeSet<>();
     public Set<String> getExpenseCategories() { return expenseCategories; }
 
+    private boolean isDirty;
+    private Path realPath;
+
     public BudgetRecord() {
-        entries = new ArrayList<>();
+        entries = new TreeMap<>();
     }
 
     public void addEntry(BudgetEntry entry) {
         LocalDate date = entry.getDate();
         YearMonth yearMonth = YearMonth.of(date.getYear(), date.getMonth());
 
-        BudgetMonthRecord monthRecord = new BudgetMonthRecord(yearMonth);
-        int index = Collections.binarySearch(entries, monthRecord, Comparator.comparing(BudgetMonthRecord::getTime));
-        if (index >= 0) monthRecord = entries.get(index);
-        else entries.add(-index - 1, monthRecord);
-
+        BudgetMonthRecord monthRecord = getMonthEntry(yearMonth);
         monthRecord.add(entry);
 
         if (entry.isIncome()) incomeCategories.add(entry.getCategory());
         else expenseCategories.add(entry.getCategory());
+
+        isDirty = true;
     }
 
     public boolean removeEntry(BudgetEntry entry) {
         LocalDate date = entry.getDate();
         YearMonth yearMonth = YearMonth.of(date.getYear(), date.getMonth());
 
-        BudgetMonthRecord monthRecord = new BudgetMonthRecord(yearMonth);
-        int index = Collections.binarySearch(entries, monthRecord, Comparator.comparing(BudgetMonthRecord::getTime));
-        if (index >= 0) monthRecord = entries.get(index);
-        else return false;
+        BudgetMonthRecord monthRecord = getMonthEntry(yearMonth);
 
-        return monthRecord.remove(entry);
+
+        boolean success = monthRecord.remove(entry);
+        isDirty = isDirty || success;
+        return success;
     }
 
     public Stream<BudgetEntry> entryStream() {
-        return entries.stream().flatMap(BudgetMonthRecord::entryStream);
+        return entries.values().stream().flatMap(BudgetMonthRecord::entryStream);
     }
 
     // Day 
@@ -105,11 +122,9 @@ public class BudgetRecord {
     // Month
 
     private BudgetMonthRecord getMonthEntry(YearMonth yearMonth) {
-        BudgetMonthRecord monthRecord = new BudgetMonthRecord(yearMonth);
-        int index = Collections.binarySearch(entries, monthRecord, Comparator.comparing(BudgetMonthRecord::getTime));
-
-        if (index < 0) return null;
-        else return entries.get(index);
+        BudgetMonthRecord record = entries.getOrDefault(yearMonth, null);
+        if (record == null) entries.put(yearMonth, record = new BudgetMonthRecord(yearMonth, realPath));
+        return record;
     }
 
     public Stream<BudgetEntry> monthEntryStream(YearMonth yearMonth) {
@@ -145,14 +160,9 @@ public class BudgetRecord {
     // Year
 
     private List<BudgetMonthRecord> getRecordsInYear(int year) {
-        BudgetMonthRecord monthRecord = new BudgetMonthRecord(YearMonth.of(year, Month.JANUARY));
-        int index = Collections.binarySearch(entries, monthRecord, Comparator.comparing(BudgetMonthRecord::getTime));
-        if (index < 0) index = -index - 1;
-
         List<BudgetMonthRecord> records = new ArrayList<>();
-        while (index < entries.size() && entries.get(index).getTime().getYear() == year) {
-            records.add(entries.get(index));
-            index++;
+        for (int a = 1; a <= 12; a++) {
+            records.add(getMonthEntry(YearMonth.of(year, a)));
         }
         return records;
     }
@@ -179,5 +189,65 @@ public class BudgetRecord {
         });
 
         return summary;
+    }
+
+    // Persistance 
+
+    public void bindFolder(String name) {
+        realPath = Path.of(System.getProperty("user.home"), ".personalbudget/records", name);
+        System.out.println(realPath.toString());
+        File directory = realPath.toFile();
+        if (!directory.exists()) System.out.println(directory.mkdirs());
+        load();
+    }
+
+    public void load() {
+        File config = realPath.resolve("config").toFile();
+        if (config.exists()) {
+            try {
+                FileReader reader = new FileReader(config);
+                BufferedReader bReader = new BufferedReader(reader);
+                JSONObject obj = new JSONObject(bReader.readLine());
+                bReader.close(); reader.close();
+
+                setCurrency(obj.getString("currency"));
+                incomeCategories.clear();
+                obj.getJSONArray("income_categories").forEach(x -> incomeCategories.add((String)x));
+                expenseCategories.clear();
+                obj.getJSONArray("expense_categories").forEach(x -> expenseCategories.add((String)x));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            isDirty = true;
+        }
+    }
+
+    public void save() {
+        if (!isDirty) return;
+
+        File config = realPath.resolve("config").toFile();
+        try {
+            if (!config.exists()) config.createNewFile();
+            FileWriter writer = new FileWriter(config);
+            JSONWriter jw = new JSONWriter(writer);
+
+            jw.object();
+            jw.key("currency").value(currency);
+            jw.key("income_categories").value(incomeCategories);
+            jw.key("expense_categories").value(expenseCategories);
+            jw.endObject();
+
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM", Locale.ENGLISH);
+        entries.forEach((ym, month) -> month.save(
+            realPath.resolve("data-" + month.getTime().format(formatter)
+        )));
+
+        isDirty = false;
     }
 }

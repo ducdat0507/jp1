@@ -66,8 +66,8 @@ public class EntryFilterFormController extends AbstractFormController {
             categoryField.setDisable(true);
         } else {
             Set<String> categories = new HashSet<>();
-            if (typeIncomeBox.isSelected()) categories.addAll(parent.getRecord().incomeCategories);
-            if (typeExpenseBox.isSelected()) categories.addAll(parent.getRecord().expenseCategories);
+            if (typeIncomeBox.isSelected()) categories.addAll(parent.getRecord().getIncomeCategories());
+            if (typeExpenseBox.isSelected()) categories.addAll(parent.getRecord().getExpenseCategories());
             categories.add("");
             categoryField.setItems(FXCollections.observableList(categories.stream().toList()));
             categoryField.setDisable(false);

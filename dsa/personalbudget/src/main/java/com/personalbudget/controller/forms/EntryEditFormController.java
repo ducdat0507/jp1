@@ -67,7 +67,7 @@ public class EntryEditFormController extends AbstractFormController {
 
     public void updateCategories() {
         categoryField.setItems(FXCollections.observableList((
-            typeIncomeRadio.isSelected() ? parent.getRecord().incomeCategories : parent.getRecord().expenseCategories
+            typeIncomeRadio.isSelected() ? parent.getRecord().getIncomeCategories() : parent.getRecord().getExpenseCategories()
         ).stream().toList()));
     }
 

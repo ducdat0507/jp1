@@ -1,18 +1,33 @@
 package com.personalbudget.entities;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Stream;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONWriter;
 
 import com.personalbudget.wheel.Index;
 
 public class BudgetMonthRecord {
+    private static final DateTimeFormatter fileYearMonthFormatter
+        = DateTimeFormatter.ofPattern("yyyy-MM", Locale.ENGLISH);
+    
     private YearMonth time;
     private List<BudgetEntry> entries;
 
@@ -22,6 +37,8 @@ public class BudgetMonthRecord {
     private Map<String, Double> totalIncomes;
     private Map<String, Double> totalExpenses;
 
+    private boolean isDirty;
+
     public BudgetMonthRecord(YearMonth time) {
         this.time = time;
         entries = new ArrayList<>();
@@ -29,6 +46,16 @@ public class BudgetMonthRecord {
         expenseCategoryIndex = new Index<>();
         totalIncomes = new HashMap<>();
         totalExpenses = new HashMap<>();
+    }
+
+    public BudgetMonthRecord(YearMonth time, Path path) {
+        this.time = time;
+        entries = new ArrayList<>();
+        incomeCategoryIndex = new Index<>();
+        expenseCategoryIndex = new Index<>();
+        totalIncomes = new HashMap<>();
+        totalExpenses = new HashMap<>();
+        load(path.resolve("data-" + fileYearMonthFormatter.format(time)));
     }
 
     public void add(BudgetEntry entry) {
@@ -50,6 +77,8 @@ public class BudgetMonthRecord {
             if (totalExpenses.containsKey(category)) totalExpenses.put(category, totalExpenses.get(category) + entry.getAmount());
             else totalExpenses.put(category, entry.getAmount());
         }
+
+        isDirty = true;
     }
 
     public boolean remove(BudgetEntry entry) {
@@ -69,6 +98,7 @@ public class BudgetMonthRecord {
             totalExpenses.put(category, totalExpenses.get(category) - entry.getAmount());
         }
 
+        isDirty = true;
         return true;
     }
 
@@ -147,5 +177,56 @@ public class BudgetMonthRecord {
 
     public Stream<BudgetEntry> entryStream() {
         return entries.stream();
+    }
+
+    private void load (Path path) {
+        File file = path.toFile();
+        if (file.exists()) {
+            try {
+                FileReader reader = new FileReader(file);
+                BufferedReader bReader = new BufferedReader(reader);
+                JSONArray arr = new JSONArray(bReader.readLine());
+                bReader.close(); reader.close();
+    
+                arr.forEach(item -> {
+                    JSONObject itemObj = (JSONObject)item;
+                    double delta = itemObj.getDouble("amount");
+                    BudgetEntry entry = delta > 0 ? new BudgetEntry.Income() : new BudgetEntry.Expense();
+                    entry.setDate(time.atDay(itemObj.getInt("day")));
+                    entry.setAmount(Math.abs(delta));
+                    entry.setCategory(itemObj.getString("category"));
+                    entry.setDescription(itemObj.getString("note"));
+                    add(entry);
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void save (Path path) {
+        if (!isDirty) return;
+
+        try {
+            File file = path.toFile();
+            if (!file.exists()) file.createNewFile();
+            FileWriter writer = new FileWriter(file);
+            JSONWriter jw = new JSONWriter(writer);
+            jw.array();
+            entries.forEach(entry -> {
+                jw.object();
+                jw.key("day").value(entry.getDate().getDayOfMonth());
+                jw.key("amount").value(entry.getDelta());
+                jw.key("category").value(entry.getCategory());
+                jw.key("note").value(entry.getDescription());
+                jw.endObject();
+            });
+            jw.endArray();
+            writer.close();
+
+            isDirty = false;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
