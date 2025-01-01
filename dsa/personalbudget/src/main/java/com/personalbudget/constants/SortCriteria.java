@@ -8,7 +8,7 @@ import com.personalbudget.i18n.I18n;
 public enum SortCriteria {
     DATE(Comparator.comparing(BudgetEntry::getDate), "main.terms.date"),
     CATEGORY(Comparator.comparing(BudgetEntry::getCategory), "main.terms.category"),
-    AMOUNT(Comparator.comparing(BudgetEntry::getAmount), "main.sort.by.amount");
+    AMOUNT(Comparator.comparing(BudgetEntry::getDelta), "main.sort.by.amount");
 
     private String labelKey;
     private Comparator<BudgetEntry> comparator;

@@ -15,10 +15,13 @@ import com.personalbudget.entities.BudgetFilters;
 import com.personalbudget.i18n.I18n;
 import com.personalbudget.wheel.QuickSort;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
@@ -61,6 +64,24 @@ public class RecordScreenController extends AbstractScreenController {
 
         tableView.getSelectionModel().selectedItemProperty().addListener((prop, from, to) -> {
             parent.openEditEntryForm(to);
+        });
+        tableView.setRowFactory(messageTable -> {
+            TableRow<BudgetEntry> row = new TableRow<>();
+            ChangeListener<? super Object> listener = (prop, from, to) -> {
+                BudgetEntry item = row.getItem();
+                int index = row.getIndex();
+                String odd = index % 2 == 0 ? "" : "-odd";
+                if (item == null) {
+                    row.getStyleClass().clear(); 
+                } else if (item.isIncome()){
+                    row.getStyleClass().setAll("income-row" + odd); 
+                } else {
+                    row.getStyleClass().setAll("expense-row" + odd);
+                }
+            };
+            row.itemProperty().addListener(listener);
+            row.indexProperty().addListener(listener);
+            return row;
         });
     }
 

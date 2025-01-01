@@ -65,3 +65,16 @@
     -fx-border-color: #68b9ff;
     -fx-background-color: #b7ddff;
 }
+
+.income-row {
+    -fx-background-color: #bcffb7
+}
+.income-row-odd {
+    -fx-background-color: #bcffb7aa;
+}
+.expense-row {
+    -fx-background-color: #ffdada;
+}
+.expense-row-odd {
+    -fx-background-color: #ffdadaaa;
+}
