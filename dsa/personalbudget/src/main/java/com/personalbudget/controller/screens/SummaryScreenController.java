@@ -6,7 +6,9 @@ import java.time.YearMonth;
 import java.util.Currency;
 
 import com.personalbudget.constants.DateRange;
+import com.personalbudget.constants.SortCriteria;
 import com.personalbudget.entities.BudgetSummary;
+import com.personalbudget.i18n.I18n;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -36,14 +38,20 @@ public class SummaryScreenController extends AbstractScreenController {
         LocalDate to = parent.getDateTo();
 
         if (from.compareTo(to) == 0) {
-            summary = parent.getRecord().getMonthSummary(YearMonth.of(from.getYear(), from.getMonth()));
+            if (range == DateRange.DAY) {
+                summary = parent.getRecord().getDaySummary(from);
+            } else if (range == DateRange.MONTH) {
+                summary = parent.getRecord().getMonthSummary(YearMonth.of(from.getYear(), from.getMonth()));
+            } else if (range == DateRange.YEAR) {
+                summary = parent.getRecord().getYearSummary(from.getYear());
+            }
         }
 
         updateUI();
     }
 
     public void updateUI() {
-        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
+        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(I18n.getLocale());
         currencyFormatter.setCurrency(Currency.getInstance(parent.getRecord().getCurrency()));
 
         totalIncomeLabel.setText(currencyFormatter.format(summary.getTotalIncomes()));

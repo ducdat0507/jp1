@@ -11,5 +11,9 @@ public abstract class AbstractFormController implements FormController {
         onParentSet();
     }
 
+    public void close() {
+        parent.removeForm();
+    }
+
     protected abstract void onParentSet();
 }

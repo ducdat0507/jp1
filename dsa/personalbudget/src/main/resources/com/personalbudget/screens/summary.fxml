@@ -12,19 +12,19 @@
          <children>
             <VBox HBox.hgrow="ALWAYS">
                <children>
-                  <Label text="Total Incomes" />
+                  <Label text="%screens.summary.total_income" />
                   <Label fx:id="totalIncomeLabel" styleClass="big-text" text="\$000.000.000" />
                </children>
             </VBox>
             <VBox HBox.hgrow="ALWAYS">
                <children>
-                  <Label text="Total Expenses" />
+                  <Label text="%screens.summary.total_expense" />
                   <Label fx:id="totalExpenseLabel" styleClass="big-text" text="\$000.000.000" />
                </children>
             </VBox>
             <VBox HBox.hgrow="ALWAYS">
                <children>
-                  <Label text="Total Balance" />
+                  <Label text="%screens.summary.total_change" />
                   <Label fx:id="totalBalanceLabel" styleClass="big-text" text="\$000.000.000" />
                </children>
             </VBox>
@@ -40,8 +40,8 @@
             <Insets />
          </VBox.margin>
          <children>
-            <PieChart fx:id="incomeByCategoryChart" labelsVisible="false" styleClass="summary-chart" title="Incomes by Category" HBox.hgrow="ALWAYS" />
-            <PieChart fx:id="expenseByCategoryChart" labelsVisible="false" styleClass="summary-chart" title="Expenses by Category" HBox.hgrow="ALWAYS" />
+            <PieChart fx:id="incomeByCategoryChart" labelsVisible="false" styleClass="summary-chart" title="%screens.summary.income_by_category" HBox.hgrow="ALWAYS" />
+            <PieChart fx:id="expenseByCategoryChart" labelsVisible="false" styleClass="summary-chart" title="%screens.summary.expense_by_category" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
    </children>

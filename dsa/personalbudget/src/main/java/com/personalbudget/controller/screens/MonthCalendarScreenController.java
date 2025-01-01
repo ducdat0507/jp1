@@ -6,6 +6,9 @@ import java.time.YearMonth;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
+import com.personalbudget.constants.DateRange;
+import com.personalbudget.i18n.I18n;
+
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -32,7 +35,7 @@ public class MonthCalendarScreenController extends AbstractScreenController {
 
         for (int a = 1; a <= 7; a++) 
         {
-            Label cellLabel = new Label(DayOfWeek.of(a).getDisplayName(TextStyle.FULL_STANDALONE, Locale.ENGLISH));
+            Label cellLabel = new Label(DayOfWeek.of(a).getDisplayName(TextStyle.FULL_STANDALONE, I18n.getLocale()));
             calendarGrid.add(cellLabel, a - 1, 0);
             GridPane.setHgrow(cellLabel, Priority.ALWAYS);
             GridPane.setVgrow(cellLabel, Priority.ALWAYS);
@@ -54,6 +57,10 @@ public class MonthCalendarScreenController extends AbstractScreenController {
             Label cellLabel = new Label(Integer.toString(a));
             cell.getChildren().add(cellLabel);
             cell.getStyleClass().add("big-text");
+
+            cell.setOnMouseClicked((ev) -> {
+                parent.setDateRange(DateRange.DAY, day);
+            });
 
             if (day.getDayOfWeek().getValue() == 7) row++;
         }

@@ -7,15 +7,13 @@ import java.util.List;
 public class Index<T extends Comparable<T>, U> {
     private class Node {
         T key;
-        List<U> values;
+        List<U> values = new ArrayList<>();
         Node leftNode;
         Node rightNode;
-        int height;
+        int height = 1;
 
         public Node(T key) {
             this.key = key;
-            this.values = new ArrayList<>();
-            this.height = 1;
         }
     }
 
@@ -39,7 +37,8 @@ public class Index<T extends Comparable<T>, U> {
     }
 
     public void add(T index, U value) {
-        insertNode(root, index).values.add(value);
+        root = insertNode(root, index);
+        get(index).add(value);
     }
     public void remove(T index, U value) {
         get(index).remove(value);
@@ -65,15 +64,15 @@ public class Index<T extends Comparable<T>, U> {
     }
 
     private Node leftRotate(Node x) {
-        Node y = x.leftNode; 
-        Node x2 = y.rightNode; 
+        Node y = x.rightNode; 
+        Node x2 = y.leftNode; 
         
         y.leftNode = x; x.rightNode = x2; 
         
         x.height = Math.max(getHeight(x.leftNode), getHeight(x.rightNode)) + 1;
         y.height = Math.max(getHeight(y.leftNode), getHeight(y.rightNode)) + 1; 
         
-        return x;
+        return y;
     }
 
     private Node insertNode(Node node, T index) 

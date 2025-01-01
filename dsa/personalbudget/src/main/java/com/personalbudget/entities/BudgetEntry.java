@@ -2,16 +2,18 @@ package com.personalbudget.entities;
 
 import java.text.NumberFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 
 public abstract class BudgetEntry {
-    private Instant instant;
+    private LocalDate date;
     private String category;
     private String description;
     private double amount;
 
     public static class Income extends BudgetEntry {
-        public Income(Instant instant, String category, String description, double amount) {
-            super(instant, category, description, amount);
+        public Income() {}
+        public Income(LocalDate date, String category, String description, double amount) {
+            super(date, category, description, amount);
         }
 
         @Override
@@ -26,13 +28,14 @@ public abstract class BudgetEntry {
 
         @Override
         public String toString() {
-            return "Income [instant = " + getInstant() + ", category = " + getCategory() + ", description = " + getDescription() + ", amount = " + getAmount() + "]";
+            return "Income [date = " + getDate() + ", category = " + getCategory() + ", description = " + getDescription() + ", amount = " + getAmount() + "]";
         }
     }
 
     public static class Expense extends BudgetEntry {
-        public Expense(Instant instant, String category, String description, double amount) {
-            super(instant, category, description, amount);
+        public Expense() {}
+        public Expense(LocalDate date, String category, String description, double amount) {
+            super(date, category, description, amount);
         }
 
         @Override
@@ -47,22 +50,23 @@ public abstract class BudgetEntry {
 
         @Override
         public String toString() {
-            return "Expense [instant = " + getInstant() + ", category = " + getCategory() + ", description = " + getDescription() + ", amount = " + getAmount() + "]";
+            return "Expense [date = " + getDate() + ", category = " + getCategory() + ", description = " + getDescription() + ", amount = " + getAmount() + "]";
         }
     }
 
-    protected BudgetEntry(Instant instant, String category, String description, double amount) {
-        this.instant = instant;
+    protected BudgetEntry() {}
+    protected BudgetEntry(LocalDate date, String category, String description, double amount) {
+        this.date = date;
         this.category = category;
         this.description = description;
         this.amount = amount;
     }
 
-    public Instant getInstant() {
-        return instant;
+    public LocalDate getDate() {
+        return date;
     }
-    public void setInstant(Instant instant) {
-        this.instant = instant;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
     public String getCategory() {
         return category;
@@ -85,5 +89,6 @@ public abstract class BudgetEntry {
 
     public abstract boolean isIncome();
     public abstract double getDelta();
+
 
 }

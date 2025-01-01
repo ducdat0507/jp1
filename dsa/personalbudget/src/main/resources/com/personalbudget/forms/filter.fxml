@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="10.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.personalbudget.controller.forms.EntryFilterFormController">
+   <children>
+      <Label fx:id="titleLabel" styleClass="big-text" text="%forms.filter.title">
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </VBox.margin></Label>
+      <ScrollPane style="-fx-background-color: #0000;" VBox.vgrow="ALWAYS">
+         <VBox.margin>
+            <Insets left="-10.0" right="-10.0" />
+         </VBox.margin>
+         <content>
+            <VBox spacing="10.0">
+               <children>
+                  <GridPane hgap="8.0" vgap="4.0">
+                    <columnConstraints>
+                      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="150.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="200.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" valignment="TOP" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" valignment="TOP" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label prefHeight="25.0" text="%forms.entry.type" />
+                        <HBox spacing="6.0" GridPane.columnIndex="1">
+                           <children>
+                              <CheckBox fx:id="typeIncomeBox" mnemonicParsing="false" text="%main.terms.income" />
+                              <CheckBox fx:id="typeExpenseBox" mnemonicParsing="false" text="%main.terms.expense" />
+                           </children>
+                           <padding>
+                              <Insets bottom="4.0" top="3.0" />
+                           </padding>
+                        </HBox>
+                        <Label prefHeight="25.0" text="%main.terms.category" GridPane.rowIndex="1" />
+                        <ComboBox fx:id="categoryField" editable="true" prefWidth="300.0" style="-fx-font-size: 0;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                     </children>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+                  </GridPane>
+                  <GridPane hgap="8.0" vgap="4.0">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="150.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="200.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" valignment="TOP" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label prefHeight="25.0" text="%forms.filter.sort" />
+                        <ComboBox fx:id="sortByField" prefWidth="300.0" style="-fx-font-size: 0;" GridPane.columnIndex="1" />
+                     </children>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+                  </GridPane>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+      <HBox spacing="10.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#close" text="%forms.common.actions.cancel" />
+            <Pane HBox.hgrow="ALWAYS" />
+            <Button fx:id="submitButton" mnemonicParsing="false" onAction="#handleSubmit" text="%forms.common.actions.apply" />
+         </children>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</VBox>

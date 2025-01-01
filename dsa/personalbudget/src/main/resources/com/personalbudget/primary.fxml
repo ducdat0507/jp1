@@ -41,6 +41,8 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
          <children>
+            <Button mnemonicParsing="false" onAction="#handlePreviousButtonClick" styleClass="nav-button" text="←" />
+            <Button mnemonicParsing="false" onAction="#handleNextButtonClick" styleClass="nav-button" text="→" />
             <HBox fx:id="titleHolder" alignment="CENTER">
                <children>
                   <Label text="20">
@@ -71,13 +73,13 @@
             <Pane HBox.hgrow="ALWAYS" />
             <HBox alignment="CENTER" fillHeight="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="nav-tab-buttons">
                <children>
-                  <ToggleButton fx:id="summaryTabButton" mnemonicParsing="false" selected="true" styleClass="button" text="Summary">
+                  <ToggleButton fx:id="summaryTabButton" mnemonicParsing="false" selected="true" styleClass="button" text="%main.tabs.summary">
                      <toggleGroup>
                         <ToggleGroup fx:id="screenMainTabs" />
                      </toggleGroup>
                   </ToggleButton>
-                  <ToggleButton fx:id="calendarTabButton" disable="true" mnemonicParsing="false" styleClass="button" text="Calendar" toggleGroup="$screenMainTabs" />
-                  <ToggleButton fx:id="recordTabButton" mnemonicParsing="false" styleClass="button" text="Records" toggleGroup="$screenMainTabs" />
+                  <ToggleButton fx:id="calendarTabButton" disable="true" mnemonicParsing="false" styleClass="button" text="%main.tabs.calendar" toggleGroup="$screenMainTabs" />
+                  <ToggleButton fx:id="recordTabButton" mnemonicParsing="false" styleClass="button" text="%main.tabs.records" toggleGroup="$screenMainTabs" />
                </children>
                <padding>
                   <Insets bottom="-1.0" left="-1.0" right="-1.0" />
@@ -92,15 +94,28 @@
             </DropShadow>
          </effect>
       </HBox>
-      <Pane fx:id="screenPane" VBox.vgrow="ALWAYS" />
-      <HBox spacing="10.0">
-         <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </padding>
+      <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <children>
-            <Pane HBox.hgrow="ALWAYS" />
-            <Button mnemonicParsing="false" styleClass="footer-big-button" text="Add Income" />
-            <Button mnemonicParsing="false" styleClass="footer-big-button" text="Add Expense" />
+            <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Pane fx:id="screenPane" VBox.vgrow="ALWAYS" />
+                  <HBox spacing="10.0">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <children>
+                        <Pane HBox.hgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" onAction="#openAddIncomeForm" styleClass="footer-big-button" text="%main.actions.add_income" />
+                        <Button mnemonicParsing="false" onAction="#openAddExpenseForm" styleClass="footer-big-button" text="%main.actions.add_expense" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <Pane fx:id="formPane" maxWidth="0.0" minWidth="0.0" prefWidth="400.0" visible="false">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </Pane>
          </children>
       </HBox>
    </children>

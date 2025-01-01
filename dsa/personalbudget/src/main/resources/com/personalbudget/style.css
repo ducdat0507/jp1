@@ -46,6 +46,11 @@
     -fx-padding: 10px 16px;
 }
 
+.active-form {
+    -fx-border-color: #0000 #0000 #0000 #c27038;
+    -fx-border-width: 0 0 0 1px;
+}
+
 .calendar-head {
     -fx-border-color: #0000 #0000 #b7ddff #0000;
     -fx-border-width: 0 0 1px 0;
