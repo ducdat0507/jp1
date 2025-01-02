@@ -125,6 +125,8 @@ public class EntryEditFormController extends AbstractFormController {
             alert.setHeaderText(I18n.get(oldEntry == null ? "dialogs.entry.add_success" : "dialogs.entry.edit_success"));
             alert.show();
         }
+        
+        parent.getRecord().save();
         parent.updateScreen();
         close();
     }
@@ -154,6 +156,7 @@ public class EntryEditFormController extends AbstractFormController {
             alert.show();
         }
 
+        parent.getRecord().save();
         parent.updateScreen();
         close();
     }

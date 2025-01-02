@@ -1,9 +1,18 @@
 package com.personalbudget.i18n;
 
+import java.util.Collections;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 public class I18n {
+    public static final Set<Locale> supportedLocales = Collections.unmodifiableSet(
+        Set.of(
+            Locale.ENGLISH, 
+            Locale.forLanguageTag("vi") // Vietnamese
+        )
+    );
+
     private static Locale locale;
     private static ResourceBundle bundle;
 

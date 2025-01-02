@@ -115,6 +115,7 @@ public class BudgetMonthRecord {
     }
 
     private List<BudgetEntry> getDayEntries(List<BudgetEntry> entries, int day) {
+        if (entries.size() == 0) return Collections.emptyList();
         BudgetEntry target = new BudgetEntry.Income();
         target.setDate(time.atDay(day));
 

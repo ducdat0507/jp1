@@ -35,7 +35,10 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -67,6 +70,8 @@ public class PrimaryController {
     private Pane formPane;
     private FormController formController;
 
+    @FXML private Menu languageMenu;
+
     public BudgetRecord getRecord() { 
         return record; 
     }
@@ -83,6 +88,7 @@ public class PrimaryController {
 
     @FXML
     private void initialize() {
+        // Initialize record
         record.setCurrency("VND"); 
         List<String> incomeCats = List.of(
             "Salary", "Other"
@@ -94,11 +100,25 @@ public class PrimaryController {
         record.getExpenseCategories().addAll(expenseCats);
         record.bindFolder("default");
 
-        // 
+        // update tab group
         ToggleGroup tabGroup = new ToggleGroup();
         tabGroup.getToggles().addAll(summaryTabButton, calendarTabButton, recordTabButton);
         tabGroup.selectedToggleProperty().addListener((prop, from, to) -> {
             setTab((ToggleButton)to);
+        });
+
+        // update language
+        ToggleGroup langGroup = new ToggleGroup();
+        for (Locale locale : I18n.supportedLocales) {
+            RadioMenuItem item = new RadioMenuItem(locale.getDisplayLanguage());
+            item.setSelected(locale == I18n.getLocale());
+            langGroup.getToggles().add(item);
+            item.setUserData(locale);
+            languageMenu.getItems().add(item);
+        }
+        langGroup.selectedToggleProperty().addListener((prop, form, to) -> {
+            try { App.getInstance().start((Locale)to.getUserData()); }
+            catch (Exception e) { e.printStackTrace(); }
         });
 
         updateTitle();

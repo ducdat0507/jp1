@@ -16,11 +16,19 @@ import com.personalbudget.i18n.I18n;
  */
 public class App extends Application {
 
+    private static App instance;
+
+    public static App getInstance() { return instance; }
+    private static void setInstance(App instance) { 
+        if (App.instance == null) App.instance = instance;
+    }
+
     private static Stage stage;
     private static Scene scene;
 
     @Override
     public void start(Stage stage) throws IOException {
+        setInstance(this);
         App.stage = stage;
         start(Locale.ENGLISH);
     } 
