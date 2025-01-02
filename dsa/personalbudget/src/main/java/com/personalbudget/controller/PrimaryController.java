@@ -49,7 +49,6 @@ import javafx.util.Callback;
 import net.datafaker.Faker;
 
 public class PrimaryController {
-    private BudgetRecord record = new BudgetRecord();
 
     private DateRange dateRange = DateRange.MONTH;
     private LocalDate dateFrom = YearMonth.now().atDay(1);
@@ -73,7 +72,7 @@ public class PrimaryController {
     @FXML private Menu languageMenu;
 
     public BudgetRecord getRecord() { 
-        return record; 
+        return App.getRecord(); 
     }
     public DateRange getDateRange() {
         return dateRange;
@@ -88,17 +87,6 @@ public class PrimaryController {
 
     @FXML
     private void initialize() {
-        // Initialize record
-        record.setCurrency("VND"); 
-        List<String> incomeCats = List.of(
-            "Salary", "Other"
-        );
-        record.getIncomeCategories().addAll(incomeCats);
-        List<String> expenseCats = List.of(
-            "Housing", "Water", "Food", "Electricity", "Internet", "Other"
-        );
-        record.getExpenseCategories().addAll(expenseCats);
-        record.bindFolder("default");
 
         // update tab group
         ToggleGroup tabGroup = new ToggleGroup();
@@ -117,7 +105,7 @@ public class PrimaryController {
             languageMenu.getItems().add(item);
         }
         langGroup.selectedToggleProperty().addListener((prop, form, to) -> {
-            try { App.getInstance().start((Locale)to.getUserData()); }
+            try { App.setLocale((Locale)to.getUserData()); }
             catch (Exception e) { e.printStackTrace(); }
         });
 
@@ -358,10 +346,11 @@ public class PrimaryController {
     }
 
     public void handleSave() {
-        record.save();
+        App.getRecord().save();
     }
 
     public void handleGenerateData() {
+        BudgetRecord record = App.getRecord();
         List<String> incomeCats = record.getIncomeCategories().stream().toList();
         List<String> expenseCats = record.getExpenseCategories().stream().toList();
         Faker faker = new Faker();

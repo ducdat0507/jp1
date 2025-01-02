@@ -2,10 +2,19 @@ package com.personalbudget.entities;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.nio.file.Path;
+import java.security.Key;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -17,6 +26,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Stream;
+
+import javax.crypto.Cipher;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -48,14 +59,14 @@ public class BudgetMonthRecord {
         totalExpenses = new HashMap<>();
     }
 
-    public BudgetMonthRecord(YearMonth time, Path path) {
+    public BudgetMonthRecord(YearMonth time, Path path, Key key) {
         this.time = time;
         entries = new ArrayList<>();
         incomeCategoryIndex = new Index<>();
         expenseCategoryIndex = new Index<>();
         totalIncomes = new HashMap<>();
         totalExpenses = new HashMap<>();
-        load(path.resolve("data-" + fileYearMonthFormatter.format(time)));
+        load(path.resolve("data-" + fileYearMonthFormatter.format(time)), key);
     }
 
     public void add(BudgetEntry entry) {
@@ -180,11 +191,17 @@ public class BudgetMonthRecord {
         return entries.stream();
     }
 
-    private void load (Path path) {
+    private void load (Path path, Key key) {
         File file = path.toFile();
         if (file.exists()) {
             try {
-                FileReader reader = new FileReader(file);
+                InputStream stream = new FileInputStream(file);
+                if (key != null) {
+                    Cipher cipher = Cipher.getInstance("RSA");
+                    cipher.init(Cipher.DECRYPT_MODE, key);
+                    stream = new javax.crypto.CipherInputStream(stream, cipher);
+                }
+                Reader reader = new InputStreamReader(stream);
                 BufferedReader bReader = new BufferedReader(reader);
                 JSONArray arr = new JSONArray(bReader.readLine());
                 bReader.close(); reader.close();
@@ -205,13 +222,19 @@ public class BudgetMonthRecord {
         }
     }
 
-    public void save (Path path) {
+    public void save (Path path, Key key) {
         if (!isDirty) return;
 
         try {
             File file = path.toFile();
             if (!file.exists()) file.createNewFile();
-            FileWriter writer = new FileWriter(file);
+            OutputStream stream = new FileOutputStream(file);
+            if (key != null) {
+                Cipher cipher = Cipher.getInstance("RSA");
+                cipher.init(Cipher.ENCRYPT_MODE, key);
+                stream = new javax.crypto.CipherOutputStream(stream, cipher);
+            }
+            Writer writer = new OutputStreamWriter(stream);
             JSONWriter jw = new JSONWriter(writer);
             jw.array();
             entries.forEach(entry -> {
@@ -226,7 +249,7 @@ public class BudgetMonthRecord {
             writer.close();
 
             isDirty = false;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

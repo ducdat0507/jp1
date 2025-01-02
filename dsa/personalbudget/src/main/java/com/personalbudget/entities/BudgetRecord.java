@@ -1,12 +1,24 @@
 package com.personalbudget.entities;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.nio.file.Path;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -26,6 +38,10 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Stream;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.json.JSONObject;
 import org.json.JSONWriter;
@@ -47,6 +63,8 @@ public class BudgetRecord {
 
     private boolean isDirty;
     private Path realPath;
+    private String password;
+    private Key key;
 
     public BudgetRecord() {
         entries = new TreeMap<>();
@@ -123,7 +141,7 @@ public class BudgetRecord {
 
     private BudgetMonthRecord getMonthEntry(YearMonth yearMonth) {
         BudgetMonthRecord record = entries.getOrDefault(yearMonth, null);
-        if (record == null) entries.put(yearMonth, record = new BudgetMonthRecord(yearMonth, realPath));
+        if (record == null) entries.put(yearMonth, record = new BudgetMonthRecord(yearMonth, realPath, key));
         return record;
     }
 
@@ -193,19 +211,35 @@ public class BudgetRecord {
 
     // Persistance 
 
-    public void bindFolder(String name) {
+    public boolean bindFolder(String name, String password) {
         realPath = Path.of(System.getProperty("user.home"), ".personalbudget/records", name);
         System.out.println(realPath.toString());
         File directory = realPath.toFile();
         if (!directory.exists()) System.out.println(directory.mkdirs());
-        load();
+        
+        this.password = password;
+        if (!password.isEmpty()) {
+            try {
+                key = new SecretKeySpec(password.getBytes("UTF-8"), "RSA");
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        return load();
     }
 
-    public void load() {
+    public boolean load() {
         File config = realPath.resolve("config").toFile();
         if (config.exists()) {
             try {
-                FileReader reader = new FileReader(config);
+                InputStream stream = new FileInputStream(config);
+                if (key != null) {
+                    Cipher cipher = Cipher.getInstance("RSA");
+                    cipher.init(Cipher.DECRYPT_MODE, key);
+                    stream = new javax.crypto.CipherInputStream(stream, cipher);
+                }
+                Reader reader = new InputStreamReader(stream);
                 BufferedReader bReader = new BufferedReader(reader);
                 JSONObject obj = new JSONObject(bReader.readLine());
                 bReader.close(); reader.close();
@@ -215,11 +249,14 @@ public class BudgetRecord {
                 obj.getJSONArray("income_categories").forEach(x -> incomeCategories.add((String)x));
                 expenseCategories.clear();
                 obj.getJSONArray("expense_categories").forEach(x -> expenseCategories.add((String)x));
-            } catch (IOException e) {
+            } catch (IOException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException e) {
                 e.printStackTrace();
+                return false;
             }
+            return true;
         } else {
             isDirty = true;
+            return true;
         }
     }
 
@@ -229,7 +266,13 @@ public class BudgetRecord {
         File config = realPath.resolve("config").toFile();
         try {
             if (!config.exists()) config.createNewFile();
-            FileWriter writer = new FileWriter(config);
+            OutputStream stream = new FileOutputStream(config);
+            if (key != null) {
+                Cipher cipher = Cipher.getInstance("RSA");
+                cipher.init(Cipher.ENCRYPT_MODE, key);
+                stream = new javax.crypto.CipherOutputStream(stream, cipher);
+            }
+            Writer writer = new OutputStreamWriter(stream);
             JSONWriter jw = new JSONWriter(writer);
 
             jw.object();
@@ -239,14 +282,14 @@ public class BudgetRecord {
             jw.endObject();
 
             writer.close();
-        } catch (IOException e) {
+        } catch (IOException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
         }
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM", Locale.ENGLISH);
         entries.forEach((ym, month) -> month.save(
             realPath.resolve("data-" + month.getTime().format(formatter)
-        )));
+        ), key));
 
         isDirty = false;
     }
